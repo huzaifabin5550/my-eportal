@@ -37,34 +37,95 @@
       font-weight: 700;
       margin-bottom: 8px;
     }
-    .submit-header p {
-      color: #94a3b8;
-      font-size: 0.92rem;
-    }
-    .form-iframe {
+    .submit-header p { color: #94a3b8; font-size: 0.92rem; }
+    .submit-card {
       background: white;
       border-radius: var(--radius);
-      padding: 32px;
+      padding: 36px;
       box-shadow: var(--shadow);
       border: 1px solid var(--border);
     }
-    .form-iframe h3 {
+    .submit-card h3 {
       font-family: 'Sora', sans-serif;
-      font-size: 1rem;
+      font-size: 1.1rem;
       font-weight: 600;
       color: var(--navy);
-      margin-bottom: 6px;
-    }
-    .form-iframe p {
-      font-size: 0.88rem;
-      color: var(--text-muted);
       margin-bottom: 24px;
-      padding-bottom: 20px;
+      padding-bottom: 16px;
       border-bottom: 1px solid var(--border);
     }
-    iframe {
-      border-radius: 10px;
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-group label {
       display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 7px;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      background: #f8fafc;
+      outline: none;
+      transition: all 0.2s;
+      box-sizing: border-box;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--blue);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    .file-upload {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 28px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #f8fafc;
+    }
+    .file-upload:hover {
+      border-color: var(--blue);
+      background: rgba(59,130,246,0.03);
+    }
+    .file-upload input { display: none; }
+    .file-upload .upload-icon { font-size: 2rem; margin-bottom: 8px; }
+    .file-upload p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+    .file-upload strong { color: var(--blue); }
+    #fileName {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: var(--blue);
+      font-weight: 600;
+    }
+    #submitMsg {
+      text-align: center;
+      font-size: 0.88rem;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 16px;
+      display: none;
     }
   </style>
 </head>
@@ -84,25 +145,87 @@
   </header>
 
   <div class="submit-wrapper">
+
     <div class="submit-header fade-up">
       <div class="badge">📤 Assignment Submission</div>
       <h2>Submit Your Assignment</h2>
-      <p>Fill in all fields carefully. Make sure your file is attached before submitting.</p>
+      <p>Fill in all fields, upload your file, and click Submit.</p>
     </div>
 
-    <div class="form-iframe fade-up-2">
-      <h3>Assignment Submission Form</h3>
-      <p>All submissions are recorded automatically in the system.</p>
-      <iframe
-        src="https://docs.google.com/forms/d/e/1FAIpQLSfHcvHTZTclj40xN1GhzzytVDVg2edhVBY5flLEMBu-UPaVfQ/viewform?embedded=true"
-        width="100%"
-        height="900px"
-        frameborder="0"
-        marginheight="0"
-        marginwidth="0">
-        Loading form...
-      </iframe>
+    <div class="submit-card fade-up-2">
+      <h3>📋 Assignment Submission Form</h3>
+
+      <div class="form-row" style="margin-bottom:16px;">
+        <div class="form-group">
+          <label>Your Name</label>
+          <select id="studentName">
+            <option value="">-- Select your name --</option>
+            <option>Alishba</option>
+            <option>Irfan</option>
+            <option>Maaz Hussain</option>
+            <option>Talha</option>
+            <option>Abrar</option>
+            <option>Huzaifa</option>
+            <option>Naveed</option>
+            <option>Maaz Iqbal</option>
+            <option>Rayan</option>
+            <option>Aqib</option>
+            <option>Sufyan</option>
+            <option>Hannan</option>
+            <option>Babar</option>
+            <option>Ahmad</option>
+            <option>Hassan</option>
+            <option>Faizan</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Roll Number</label>
+          <input type="text" id="rollNumber" placeholder="e.g. 01" />
+        </div>
+      </div>
+
+      <div class="form-row" style="margin-bottom:16px;">
+        <div class="form-group">
+          <label>Subject</label>
+          <select id="subjectName">
+            <option value="">-- Select subject --</option>
+            <option value="gdpr">EU GDPR & Data Security</option>
+            <option value="future">Future Proofing your Business</option>
+            <option value="investigations">Investigations & Incident Response</option>
+            <option value="mobile">Mobile Device & Data Risks</option>
+            <option value="network">Network Architecture & Protocols</option>
+            <option value="threat">Threat & Risk: Expecting the Unexpected</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Assignment Number</label>
+          <input type="text" id="assignmentNumber" placeholder="e.g. Assignment 1" />
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-bottom:16px;">
+        <label>Notes (optional)</label>
+        <textarea id="notes" placeholder="Any notes for your teacher..."></textarea>
+      </div>
+
+      <div class="form-group" style="margin-bottom:24px;">
+        <label>Upload File</label>
+        <div class="file-upload" onclick="document.getElementById('fileInput').click()">
+          <input type="file" id="fileInput" onchange="showFileName()" />
+          <div class="upload-icon">📁</div>
+          <p><strong>Click to upload</strong> your assignment file</p>
+          <p>PDF, DOCX, ZIP accepted</p>
+          <div id="fileName"></div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-full" onclick="submitAssignment()">
+        ✅ Submit Assignment
+      </button>
+
+      <div id="submitMsg" class="msg"></div>
     </div>
+
   </div>
 
   <footer>
@@ -112,6 +235,8 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
     const firebaseConfig = {
       apiKey: "AIzaSyD2gg4JLsd-Q0vPRYuukZ3oujb6RiR53NE",
       authDomain: "my-e-portal.firebaseapp.com",
@@ -120,12 +245,66 @@
       messagingSenderId: "628881859766",
       appId: "1:628881859766:web:e45df5cb372d58960c7217"
     };
+
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
     onAuthStateChanged(auth, (user) => {
       if (!user) window.location.href = "login.html";
     });
+
+    window.showFileName = function() {
+      const file = document.getElementById("fileInput").files[0];
+      if (file) {
+        document.getElementById("fileName").textContent = "📎 " + file.name;
+      }
+    }
+
+    window.submitAssignment = async function() {
+      const student = document.getElementById("studentName").value;
+      const roll = document.getElementById("rollNumber").value;
+      const subject = document.getElementById("subjectName").value;
+      const assignment = document.getElementById("assignmentNumber").value;
+      const submitMsg = document.getElementById("submitMsg");
+
+      if (!student || !subject || !roll || !assignment) {
+        submitMsg.textContent = "❌ Please fill in all required fields.";
+        submitMsg.className = "msg msg-error";
+        submitMsg.style.display = "block";
+        return;
+      }
+
+      submitMsg.textContent = "Submitting...";
+      submitMsg.className = "msg";
+      submitMsg.style.display = "block";
+
+      try {
+        const docRef = doc(db, "tracker", "submissions");
+        const docSnap = await getDoc(docRef);
+        let data = docSnap.exists() ? docSnap.data() : {};
+
+        if (!data[student]) data[student] = {};
+        data[student][subject] = true;
+
+        await setDoc(docRef, data);
+
+        submitMsg.textContent = "✅ Assignment submitted successfully! Your status has been updated.";
+        submitMsg.className = "msg msg-success";
+
+        // Reset form
+        document.getElementById("studentName").value = "";
+        document.getElementById("rollNumber").value = "";
+        document.getElementById("subjectName").value = "";
+        document.getElementById("assignmentNumber").value = "";
+        document.getElementById("notes").value = "";
+        document.getElementById("fileName").textContent = "";
+
+      } catch (err) {
+        submitMsg.textContent = "❌ Submission failed. Please try again.";
+        submitMsg.className = "msg msg-error";
+      }
+    }
 
     window.logoutUser = function() {
       signOut(auth).then(() => window.location.href = "login.html");
@@ -134,3 +313,10 @@
 
 </body>
 </html>
+```
+
+Press **Ctrl + S** then:
+```
+git add .
+git commit -m "removed google form added custom submit"
+git push
