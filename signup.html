@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up — My Class ePortal</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .auth-box {
+      max-width: 420px;
+      margin: 60px auto;
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+    .auth-box h2 { color: #1a73e8; margin-bottom: 24px; text-align: center; }
+    .auth-box input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 16px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    .auth-box button {
+      width: 100%;
+      padding: 12px;
+      background: #1a73e8;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    .auth-box button:hover { background: #1558b0; }
+    .auth-box p { text-align: center; margin-top: 10px; }
+    .auth-box a { color: #1a73e8; text-decoration: none; }
+    #error-msg { color: red; text-align: center; font-size: 0.9rem; }
+    #success-msg { color: green; text-align: center; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📚 My Class ePortal</h1>
+    <p>Create your student account</p>
+  </header>
+
+  <div class="auth-box">
+    <h2>📝 Sign Up</h2>
+    <input type="text" id="name" placeholder="Full Name" />
+    <input type="email" id="email" placeholder="Email address" />
+    <input type="password" id="password" placeholder="Password (min 6 characters)" />
+    <button onclick="signupUser()">Create Account</button>
+    <p id="error-msg"></p>
+    <p id="success-msg"></p>
+    <p>Already have an account? <a href="login.html">Login</a></p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD2gg4JLsd-Q0vPRYuukZ3oujb6RiR53NE",
+      authDomain: "my-e-portal.firebaseapp.com",
+      projectId: "my-e-portal",
+      storageBucket: "my-e-portal.firebasestorage.app",
+      messagingSenderId: "628881859766",
+      appId: "1:628881859766:web:e45df5cb372d58960c7217"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.signupUser = function() {
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const errorMsg = document.getElementById("error-msg");
+      const successMsg = document.getElementById("success-msg");
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          return updateProfile(userCredential.user, { displayName: name });
+        })
+        .then(() => {
+          successMsg.textContent = "Account created! Redirecting to login...";
+          setTimeout(() => window.location.href = "login.html", 2000);
+        })
+        .catch((error) => {
+          if(error.code === "auth/email-already-in-use") {
+            errorMsg.textContent = "This email is already registered.";
+          } else if(error.code === "auth/weak-password") {
+            errorMsg.textContent = "Password must be at least 6 characters.";
+          } else {
+            errorMsg.textContent = "Signup failed. Try again.";
+          }
+        });
+    }
+  </script>
+</body>
+</html>
