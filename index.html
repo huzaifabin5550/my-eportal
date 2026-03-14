@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Home — ClassPortal</title>
+  <title>ClassPortal — Assignment Submission System</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
   <header>
     <a href="index.html" class="header-brand">
       <div class="logo-icon">📚</div>
@@ -14,14 +15,91 @@
     </a>
     <nav>
       <a href="index.html" class="active">Home</a>
-      <a href="login.html">Login</a>
+      <a href="upload.html">Upload</a>
+      <a href="status.html">My Status</a>
+      <div class="dropdown" id="loginDropdown">
+        <a href="#" class="dropdown-toggle" id="loginToggle" onclick="toggleDropdown(event)">Log In ▾</a>
+        <div class="dropdown-menu" id="dropdownMenu">
+          <a href="login.html?role=admin">
+            <div class="dm-icon dm-admin">🛡️</div>
+            <div>
+              <strong>Login as Admin</strong>
+              <small>Teacher / Manager</small>
+            </div>
+          </a>
+          <a href="login.html?role=student">
+            <div class="dm-icon dm-student">🎓</div>
+            <div>
+              <strong>Login as Student</strong>
+              <small>Class member</small>
+            </div>
+          </a>
+        </div>
+      </div>
       <a href="signup.html" class="btn-nav">Sign Up</a>
     </nav>
   </header>
-  <main>
-  </main>
+
+  <div class="page-hero">
+    <div class="hero-badge">🎓 Academic Assignment Portal</div>
+    <h1 class="fade-up">Submit Assignments<br/><span>The Smart Way</span></h1>
+    <p class="fade-up-2">A secure platform for uploading, tracking, and managing class assignments — built for students and teachers.</p>
+    <div class="hero-btns fade-up-3">
+      <a href="signup.html" class="btn btn-primary">Get Started Free</a>
+      <a href="login.html" class="btn btn-secondary">Login to Portal</a>
+    </div>
+  </div>
+
+  <div class="feature-grid">
+    <a href="signup.html" class="feature-card fade-up">
+      <div class="fc-icon">📝</div>
+      <h3>Create Account</h3>
+      <p>Sign up with your student details and join the portal in seconds</p>
+    </a>
+    <a href="upload.html" class="feature-card fade-up-2">
+      <div class="fc-icon">📤</div>
+      <h3>Upload Assignment</h3>
+      <p>Submit PDF, DOCX, PPTX or ZIP files directly to your teacher</p>
+    </a>
+    <a href="status.html" class="feature-card fade-up-3">
+      <div class="fc-icon">📊</div>
+      <h3>Track Status</h3>
+      <p>See which assignments have been submitted and which are pending</p>
+    </a>
+    <a href="login.html" class="feature-card fade-up-4">
+      <div class="fc-icon">🔐</div>
+      <h3>Secure Login</h3>
+      <p>Your account and files are protected with Firebase Authentication</p>
+    </a>
+  </div>
+
+  <div style="max-width:1020px; margin: 0 auto 60px; padding: 0 32px;">
+    <div class="card">
+      <div class="card-title">📢 Announcements</div>
+      <ul class="announce-list">
+        <li>📌 All assignments must be submitted before the deadline</li>
+        <li>📌 Accepted formats: PDF, DOCX, PPTX, ZIP (max 50MB)</li>
+        <li>📌 Login with your registered email to upload assignments</li>
+        <li>📌 Contact your teacher if you face any login issues</li>
+      </ul>
+    </div>
+  </div>
+
   <footer>
-    <p>© 2025 <span>ClassPortal</span></p>
+    <p>© 2025 <span>ClassPortal</span> — Assignment Submission System</p>
   </footer>
+
+  <script>
+    function toggleDropdown(e) {
+      e.preventDefault();
+      document.getElementById("dropdownMenu").classList.toggle("open");
+    }
+    document.addEventListener("click", function(e) {
+      if (!document.getElementById("loginDropdown").contains(e.target)) {
+        document.getElementById("dropdownMenu").classList.remove("open");
+      }
+    });
+  </script>
+
 </body>
 </html>

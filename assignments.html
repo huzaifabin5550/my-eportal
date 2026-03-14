@@ -3,10 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Assignments — ClassPortal</title>
+  <title>All Assignments — ClassPortal</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .assign-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+  </style>
 </head>
 <body>
+
   <header>
     <a href="index.html" class="header-brand">
       <div class="logo-icon">📚</div>
@@ -14,23 +25,227 @@
     </a>
     <nav>
       <a href="index.html">Home</a>
+      <a href="admin.html">Admin</a>
       <a href="assignments.html" class="active">Assignments</a>
-      <button class="nav-logout">Logout</button>
+      <button class="nav-logout" onclick="logoutUser()">Logout</button>
     </nav>
   </header>
-  <main>
-  </main>
+
+  <!-- Access Denied -->
+  <div class="access-denied" id="accessDenied" style="display:none;">
+    <div class="ad-icon">🚫</div>
+    <h2>Access Denied</h2>
+    <p>Only administrators can access this page.</p>
+    <a href="index.html" class="btn btn-primary">Go to Homepage</a>
+  </div>
+
+  <!-- Admin Content -->
+  <div id="adminContent" style="display:none;">
+    <div class="assign-wrap">
+
+      <div class="section-banner fade-up">
+        <div class="s-badge">📥 Admin Only</div>
+        <h2>All <span>Uploaded Assignments</span></h2>
+        <p>View, search, download and delete all student submissions.</p>
+      </div>
+
+      <div class="search-bar fade-up-2">
+        <div class="form-group">
+          <label>Student Name</label>
+          <input type="text" id="searchName"
+            placeholder="Search by name..." oninput="filterAssignments()" />
+        </div>
+        <div class="form-group">
+          <label>Student ID</label>
+          <input type="text" id="searchRoll"
+            placeholder="Search by ID..." oninput="filterAssignments()" />
+        </div>
+        <div class="form-group">
+          <label>Course</label>
+          <select id="searchCourse" onchange="filterAssignments()">
+            <option value="">All Courses</option>
+            <option value="gdpr">EU GDPR & Data Security</option>
+            <option value="future">Future Proofing your Business</option>
+            <option value="investigations">Investigations & Incident Response</option>
+            <option value="mobile">Mobile Device & Data Risks</option>
+            <option value="network">Network Architecture & Protocols</option>
+            <option value="threat">Threat & Risk: Expecting the Unexpected</option>
+          </select>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="clearFilters()">Clear</button>
+      </div>
+
+      <div class="card fade-up-3">
+        <div class="card-title">
+          📋 Submissions
+          <span class="ct-badge" id="countBadge">0</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Student Name</th>
+                <th>Student ID</th>
+                <th>Assignment Title</th>
+                <th>Course</th>
+                <th>File</th>
+                <th>Upload Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="assignmentsTable">
+              <tr>
+                <td colspan="7" style="text-align:center;padding:32px;color:#94a3b8;">
+                  Loading...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <footer>
-    <p>© 2025 <span>ClassPortal</span></p>
+    <p>© 2025 <span>ClassPortal</span> — Assignment Submission System</p>
   </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, query, orderBy, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD2gg4JLsd-Q0vPRYuukZ3oujb6RiR53NE",
+      authDomain: "my-e-portal.firebaseapp.com",
+      projectId: "my-e-portal",
+      storageBucket: "my-e-portal.firebasestorage.app",
+      messagingSenderId: "628881859766",
+      appId: "1:628881859766:web:e45df5cb372d58960c7217"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const courseNames = {
+      gdpr: "EU GDPR & Data Security",
+      future: "Future Proofing your Business",
+      investigations: "Investigations & Incident Response",
+      mobile: "Mobile Device & Data Risks",
+      network: "Network Architecture & Protocols",
+      threat: "Threat & Risk: Expecting the Unexpected"
+    };
+
+    let allAssignments = [];
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+      } else if (user.email !== "admin@eportal.com") {
+        document.getElementById("accessDenied").style.display = "flex";
+      } else {
+        document.getElementById("adminContent").style.display = "block";
+        await loadAssignments();
+      }
+    });
+
+    async function loadAssignments() {
+      try {
+        const q = query(
+          collection(db, "assignments"),
+          orderBy("uploadedAt", "desc")
+        );
+        const snapshot = await getDocs(q);
+        allAssignments = [];
+        snapshot.forEach(d => allAssignments.push({ id: d.id, ...d.data() }));
+        renderTable(allAssignments);
+      } catch (err) {
+        console.error(err);
+        renderTable([]);
+      }
+    }
+
+    function renderTable(list) {
+      document.getElementById("countBadge").textContent = list.length;
+      const tbody = document.getElementById("assignmentsTable");
+
+      if (list.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align:center;padding:40px;color:#94a3b8;">
+              📭 No assignments found.
+            </td>
+          </tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(a => `
+        <tr>
+          <td><strong>${a.studentName || "—"}</strong></td>
+          <td>${a.rollNumber || "—"}</td>
+          <td>${a.assignmentTitle || "Untitled"}</td>
+          <td><span class="badge badge-blue">${courseNames[a.course] || a.course}</span></td>
+          <td style="font-size:0.8rem;color:var(--text-muted);">📎 ${a.fileName || "—"}</td>
+          <td style="font-size:0.8rem;color:var(--text-muted);">
+            ${a.uploadedAt ? new Date(a.uploadedAt.seconds * 1000).toLocaleDateString() : "N/A"}
+          </td>
+          <td>
+            <button class="btn-dl" onclick="downloadFile('${a.id}')">⬇️ Download</button>
+            <button class="btn-del" onclick="deleteAssignment('${a.id}')">🗑️ Delete</button>
+          </td>
+        </tr>`).join("");
+
+      window._allAssignments = allAssignments;
+    }
+
+    window.filterAssignments = function() {
+      const name = document.getElementById("searchName").value.toLowerCase();
+      const roll = document.getElementById("searchRoll").value.toLowerCase();
+      const course = document.getElementById("searchCourse").value;
+
+      const filtered = allAssignments.filter(a =>
+        (!name || (a.studentName || "").toLowerCase().includes(name)) &&
+        (!roll || (a.rollNumber || "").toLowerCase().includes(roll)) &&
+        (!course || a.course === course)
+      );
+      renderTable(filtered);
+    }
+
+    window.clearFilters = function() {
+      document.getElementById("searchName").value = "";
+      document.getElementById("searchRoll").value = "";
+      document.getElementById("searchCourse").value = "";
+      renderTable(allAssignments);
+    }
+
+    window.downloadFile = function(id) {
+      const a = window._allAssignments?.find(x => x.id === id);
+      if (!a?.fileData) return;
+      const link = document.createElement("a");
+      link.href = a.fileData;
+      link.download = a.fileName;
+      link.click();
+    }
+
+    window.deleteAssignment = async function(id) {
+      if (!confirm("Are you sure you want to delete this assignment?")) return;
+      try {
+        await deleteDoc(doc(db, "assignments", id));
+        allAssignments = allAssignments.filter(a => a.id !== id);
+        window._allAssignments = allAssignments;
+        filterAssignments();
+      } catch (err) {
+        alert("Error deleting. Please try again.");
+        console.error(err);
+      }
+    }
+
+    window.logoutUser = function() {
+      signOut(auth).then(() => window.location.href = "login.html");
+    }
+  </script>
+
 </body>
 </html>
-```
-
----
-
-Paste each one into its file → **Ctrl + S** → then push all at once:
-```
-git add .
-git commit -m "blank pages reset"
-git push

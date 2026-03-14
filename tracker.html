@@ -5,8 +5,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tracker — ClassPortal</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .tracker-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+    .table-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      overflow-x: auto;
+    }
+    table { min-width: 960px; }
+    .toggle-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: none;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: 'Inter', sans-serif;
+      white-space: nowrap;
+    }
+    .toggle-submitted { background: var(--success-bg); color: var(--success); }
+    .toggle-submitted:hover { background: #bbf7d0; }
+    .toggle-not { background: var(--error-bg); color: var(--error); }
+    .toggle-not:hover { background: #fecaca; }
+    .save-msg {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: right;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
+
   <header>
     <a href="index.html" class="header-brand">
       <div class="logo-icon">📚</div>
@@ -14,14 +55,150 @@
     </a>
     <nav>
       <a href="index.html">Home</a>
+      <a href="admin.html">Admin</a>
       <a href="tracker.html" class="active">Tracker</a>
-      <button class="nav-logout">Logout</button>
+      <button class="nav-logout" onclick="logoutUser()">Logout</button>
     </nav>
   </header>
-  <main>
-  </main>
+
+  <!-- Access Denied -->
+  <div class="access-denied" id="accessDenied" style="display:none;">
+    <div class="ad-icon">🚫</div>
+    <h2>Access Denied</h2>
+    <p>Only administrators can access this page.</p>
+    <a href="index.html" class="btn btn-primary">Go to Homepage</a>
+  </div>
+
+  <!-- Tracker Content -->
+  <div id="trackerContent" style="display:none;">
+    <div class="tracker-wrap">
+
+      <div class="section-banner fade-up">
+        <div class="s-badge">📋 Admin Only</div>
+        <h2>Assignment <span>Submission Tracker</span></h2>
+        <p>Click any button to toggle submitted / not submitted status. Changes save instantly.</p>
+      </div>
+
+      <div class="table-card fade-up-2">
+        <div class="card-title" style="margin-bottom:20px;">
+          👥 Class Overview
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Student Name</th>
+              <th>EU GDPR</th>
+              <th>Future Proofing</th>
+              <th>Investigations</th>
+              <th>Mobile & Data</th>
+              <th>Network</th>
+              <th>Threat & Risk</th>
+            </tr>
+          </thead>
+          <tbody id="trackerBody">
+            <tr>
+              <td colspan="7" style="text-align:center;color:#94a3b8;padding:32px;">
+                Loading...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="save-msg" id="saveMsg"></p>
+      </div>
+
+    </div>
+  </div>
+
   <footer>
-    <p>© 2025 <span>ClassPortal</span></p>
+    <p>© 2025 <span>ClassPortal</span> — Assignment Submission System</p>
   </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD2gg4JLsd-Q0vPRYuukZ3oujb6RiR53NE",
+      authDomain: "my-e-portal.firebaseapp.com",
+      projectId: "my-e-portal",
+      storageBucket: "my-e-portal.firebasestorage.app",
+      messagingSenderId: "628881859766",
+      appId: "1:628881859766:web:e45df5cb372d58960c7217"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const students = [
+      "Alishba","Irfan","Maaz Hussain","Talha","Abrar",
+      "Huzaifa","Naveed","Maaz Iqbal","Rayan","Aqib",
+      "Sufyan","Hannan","Babar","Ahmad","Hassan","Faizan"
+    ];
+
+    const subjects = ["gdpr","future","investigations","mobile","network","threat"];
+    let trackerData = {};
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+      } else if (user.email !== "admin@eportal.com") {
+        document.getElementById("accessDenied").style.display = "flex";
+      } else {
+        document.getElementById("trackerContent").style.display = "block";
+        await loadData();
+        renderTable();
+      }
+    });
+
+    async function loadData() {
+      const snap = await getDoc(doc(db, "tracker", "submissions"));
+      if (snap.exists()) {
+        trackerData = snap.data();
+      } else {
+        students.forEach(s => {
+          trackerData[s] = {};
+          subjects.forEach(sub => trackerData[s][sub] = false);
+        });
+        await setDoc(doc(db, "tracker", "submissions"), trackerData);
+      }
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById("trackerBody");
+      tbody.innerHTML = "";
+      students.forEach(student => {
+        const row = document.createElement("tr");
+        let cells = `<td style="font-weight:600;color:var(--navy-2);">${student}</td>`;
+        subjects.forEach(sub => {
+          const submitted = trackerData[student]?.[sub] || false;
+          cells += `<td>
+            <button class="toggle-btn ${submitted ? 'toggle-submitted' : 'toggle-not'}"
+              onclick="toggleStatus('${student}','${sub}')">
+              ${submitted ? '✅ Submitted' : '❌ Not Submitted'}
+            </button>
+          </td>`;
+        });
+        row.innerHTML = cells;
+        tbody.appendChild(row);
+      });
+    }
+
+    window.toggleStatus = async function(student, subject) {
+      trackerData[student][subject] = !trackerData[student][subject];
+      renderTable();
+      const saveMsg = document.getElementById("saveMsg");
+      saveMsg.textContent = "Saving...";
+      await setDoc(doc(db, "tracker", "submissions"), trackerData);
+      saveMsg.textContent = "✅ Saved!";
+      setTimeout(() => saveMsg.textContent = "", 2000);
+    }
+
+    window.logoutUser = function() {
+      signOut(auth).then(() => window.location.href = "login.html");
+    }
+  </script>
+
 </body>
 </html>

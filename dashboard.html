@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
   <header>
     <a href="index.html" class="header-brand">
       <div class="logo-icon">📚</div>
@@ -14,14 +15,178 @@
     </a>
     <nav>
       <a href="index.html">Home</a>
+      <a href="upload.html">Upload</a>
+      <a href="status.html">My Status</a>
       <a href="dashboard.html" class="active">Dashboard</a>
-      <button class="nav-logout">Logout</button>
+      <button class="nav-logout" onclick="logoutUser()">Logout</button>
     </nav>
   </header>
-  <main>
-  </main>
+
+  <div class="page-wrapper">
+
+    <div class="welcome-card fade-up">
+      <div>
+        <h2>Welcome back, <span id="studentName">Student</span> 👋</h2>
+        <p>Here is your ClassPortal overview for today</p>
+      </div>
+      <a href="upload.html" class="btn btn-gold">+ Upload Assignment</a>
+    </div>
+
+    <div class="stats-row fade-up-2">
+      <a href="upload.html" class="stat-card">
+        <div class="stat-icon si-blue">📤</div>
+        <div>
+          <strong>Upload</strong>
+          <small>Submit assignment</small>
+        </div>
+      </a>
+      <a href="status.html" class="stat-card">
+        <div class="stat-icon si-green">📊</div>
+        <div>
+          <strong>My Status</strong>
+          <small>Track submissions</small>
+        </div>
+      </a>
+      <a href="tracker.html" class="stat-card">
+        <div class="stat-icon si-gold">📋</div>
+        <div>
+          <strong>All Subjects</strong>
+          <small>View all courses</small>
+        </div>
+      </a>
+    </div>
+
+    <div class="card fade-up-3">
+      <div class="card-title">
+        📂 My Uploaded Assignments
+        <span class="ct-badge" id="assignCount">0</span>
+      </div>
+      <div id="assignmentsList">
+        <div class="empty-state">
+          <div class="es-icon">⏳</div>
+          <p>Loading your assignments...</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card fade-up-4">
+      <div class="card-title">📢 Announcements</div>
+      <ul class="announce-list">
+        <li>📌 All assignments must be submitted before the deadline</li>
+        <li>📌 Accepted formats: PDF, DOCX, PPTX, ZIP (max 50MB)</li>
+        <li>📌 Login with your registered email to upload assignments</li>
+        <li>📌 Contact your teacher if you face any issues</li>
+      </ul>
+    </div>
+
+  </div>
+
   <footer>
-    <p>© 2025 <span>ClassPortal</span></p>
+    <p>© 2025 <span>ClassPortal</span> — Assignment Submission System</p>
   </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, query, where, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD2gg4JLsd-Q0vPRYuukZ3oujb6RiR53NE",
+      authDomain: "my-e-portal.firebaseapp.com",
+      projectId: "my-e-portal",
+      storageBucket: "my-e-portal.firebasestorage.app",
+      messagingSenderId: "628881859766",
+      appId: "1:628881859766:web:e45df5cb372d58960c7217"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const courseNames = {
+      gdpr: "EU GDPR & Data Security",
+      future: "Future Proofing your Business",
+      investigations: "Investigations & Incident Response",
+      mobile: "Mobile Device & Data Risks",
+      network: "Network Architecture & Protocols",
+      threat: "Threat & Risk: Expecting the Unexpected"
+    };
+
+    let myAssignments = [];
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+      document.getElementById("studentName").textContent =
+        user.displayName || user.email.split("@")[0];
+      await loadMyAssignments(user.uid);
+    });
+
+    async function loadMyAssignments(uid) {
+      try {
+        const q = query(
+          collection(db, "assignments"),
+          where("userId", "==", uid),
+          orderBy("uploadedAt", "desc")
+        );
+        const snapshot = await getDocs(q);
+        myAssignments = [];
+        snapshot.forEach(d => myAssignments.push({ id: d.id, ...d.data() }));
+        renderAssignments();
+      } catch (err) {
+        console.error(err);
+        renderAssignments();
+      }
+    }
+
+    function renderAssignments() {
+      const container = document.getElementById("assignmentsList");
+      document.getElementById("assignCount").textContent = myAssignments.length;
+
+      if (myAssignments.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="es-icon">📭</div>
+            <p>You haven't uploaded any assignments yet. <a href="upload.html" style="color:var(--blue)">Upload now →</a></p>
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = myAssignments.map(a => `
+        <div class="assign-row">
+          <div class="ar-info">
+            <strong>${a.assignmentTitle || "Untitled"}</strong>
+            <div class="ar-meta">
+              <span>📚 ${courseNames[a.course] || a.course}</span>
+              <span>📎 ${a.fileName}</span>
+              <span>🕒 ${a.uploadedAt ? new Date(a.uploadedAt.seconds * 1000).toLocaleDateString() : "Just now"}</span>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <span class="badge badge-success">✅ Submitted</span>
+            <button class="btn-dl" onclick="downloadFile('${a.id}')">⬇️ Download</button>
+          </div>
+        </div>
+      `).join("");
+
+      window._assignments = myAssignments;
+    }
+
+    window.downloadFile = function(id) {
+      const a = window._assignments?.find(x => x.id === id);
+      if (!a?.fileData) return;
+      const link = document.createElement("a");
+      link.href = a.fileData;
+      link.download = a.fileName;
+      link.click();
+    }
+
+    window.logoutUser = function() {
+      signOut(auth).then(() => window.location.href = "login.html");
+    }
+  </script>
+
 </body>
 </html>

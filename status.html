@@ -3,10 +3,69 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Status — ClassPortal</title>
+  <title>My Status — ClassPortal</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .subject-row {
+      background: white;
+      border-radius: var(--radius-sm);
+      padding: 18px 22px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      transition: var(--transition);
+      margin-bottom: 10px;
+    }
+    .subject-row:hover {
+      border-color: rgba(37,99,235,0.2);
+      box-shadow: var(--shadow-sm);
+    }
+    .subject-row .sub-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .sub-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg,
+        rgba(37,99,235,0.1), rgba(245,158,11,0.08));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .sub-info strong {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--navy-2);
+    }
+    .confirm-banner {
+      background: linear-gradient(135deg, #064e3b, #065f46);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      color: white;
+      text-align: center;
+      display: none;
+    }
+    .confirm-banner .cb-icon { font-size: 3rem; margin-bottom: 12px; }
+    .confirm-banner h3 {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .confirm-banner p { color: #6ee7b7; font-size: 0.875rem; }
+  </style>
 </head>
 <body>
+
   <header>
     <a href="index.html" class="header-brand">
       <div class="logo-icon">📚</div>
@@ -14,14 +73,186 @@
     </a>
     <nav>
       <a href="index.html">Home</a>
-      <a href="status.html" class="active">Status</a>
-      <button class="nav-logout">Logout</button>
+      <a href="upload.html">Upload</a>
+      <a href="status.html" class="active">My Status</a>
+      <a href="dashboard.html">Dashboard</a>
+      <button class="nav-logout" onclick="logoutUser()">Logout</button>
     </nav>
   </header>
-  <main>
-  </main>
+
+  <div class="page-wrapper-sm">
+
+    <!-- Confirmation banner (shown after upload redirect) -->
+    <div class="confirm-banner fade-up" id="confirmBanner">
+      <div class="cb-icon">✅</div>
+      <h3>Assignment Uploaded Successfully!</h3>
+      <p>Your assignment has been submitted and recorded in the system.</p>
+    </div>
+
+    <div class="section-banner fade-up">
+      <div class="s-badge">📊 Submission Status</div>
+      <h2>My <span>Assignment Status</span></h2>
+      <p>Check which assignments have been submitted for each course.</p>
+    </div>
+
+    <div class="card fade-up-2">
+      <div class="card-title">📚 Course Submission Status</div>
+      <div id="statusList">
+        <div class="empty-state">
+          <div class="es-icon">⏳</div>
+          <p>Loading your status...</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card fade-up-3">
+      <div class="card-title">
+        📂 My Uploaded Files
+        <span class="ct-badge" id="fileCount">0</span>
+      </div>
+      <div id="myFilesList">
+        <div class="empty-state">
+          <div class="es-icon">⏳</div>
+          <p>Loading your files...</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
   <footer>
-    <p>© 2025 <span>ClassPortal</span></p>
+    <p>© 2025 <span>ClassPortal</span> — Assignment Submission System</p>
   </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, collection, query, where, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD2gg4JLsd-Q0vPRYuukZ3oujb6RiR53NE",
+      authDomain: "my-e-portal.firebaseapp.com",
+      projectId: "my-e-portal",
+      storageBucket: "my-e-portal.firebasestorage.app",
+      messagingSenderId: "628881859766",
+      appId: "1:628881859766:web:e45df5cb372d58960c7217"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const courses = [
+      { key: "gdpr", label: "EU GDPR & Data Security", icon: "🔒" },
+      { key: "future", label: "Future Proofing your Business", icon: "🚀" },
+      { key: "investigations", label: "Investigations & Incident Response", icon: "🔍" },
+      { key: "mobile", label: "Mobile Device & Data Risks", icon: "📱" },
+      { key: "network", label: "Network Architecture & Protocols", icon: "🌐" },
+      { key: "threat", label: "Threat & Risk: Expecting the Unexpected", icon: "⚠️" }
+    ];
+
+    let myFiles = [];
+
+    // Show confirmation banner if redirected from upload
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("uploaded") === "true") {
+      document.getElementById("confirmBanner").style.display = "block";
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) { window.location.href = "login.html"; return; }
+
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      const userData = userDoc.exists() ? userDoc.data() : {};
+      const studentName = userData.fullName || user.displayName || user.email;
+
+      await loadStatus(studentName);
+      await loadMyFiles(user.uid);
+    });
+
+    async function loadStatus(studentName) {
+      try {
+        const trackerRef = doc(db, "tracker", "submissions");
+        const trackerSnap = await getDoc(trackerRef);
+        const trackerData = trackerSnap.exists() ? trackerSnap.data() : {};
+        const studentData = trackerData[studentName] || {};
+
+        const container = document.getElementById("statusList");
+        container.innerHTML = courses.map(c => {
+          const submitted = studentData[c.key] || false;
+          return `
+            <div class="subject-row">
+              <div class="sub-info">
+                <div class="sub-icon">${c.icon}</div>
+                <strong>${c.label}</strong>
+              </div>
+              <span class="badge ${submitted ? 'badge-success' : 'badge-error'}">
+                ${submitted ? '✅ Submitted' : '❌ Not Submitted'}
+              </span>
+            </div>`;
+        }).join("");
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function loadMyFiles(uid) {
+      try {
+        const q = query(
+          collection(db, "assignments"),
+          where("userId", "==", uid),
+          orderBy("uploadedAt", "desc")
+        );
+        const snapshot = await getDocs(q);
+        myFiles = [];
+        snapshot.forEach(d => myFiles.push({ id: d.id, ...d.data() }));
+
+        document.getElementById("fileCount").textContent = myFiles.length;
+        const container = document.getElementById("myFilesList");
+
+        if (myFiles.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="es-icon">📭</div>
+              <p>No files uploaded yet. <a href="upload.html" style="color:var(--blue)">Upload now →</a></p>
+            </div>`;
+          return;
+        }
+
+        container.innerHTML = myFiles.map(a => `
+          <div class="assign-row">
+            <div class="ar-info">
+              <strong>${a.assignmentTitle}</strong>
+              <div class="ar-meta">
+                <span>📎 ${a.fileName}</span>
+                <span>🕒 ${a.uploadedAt ? new Date(a.uploadedAt.seconds * 1000).toLocaleDateString() : "Just now"}</span>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span class="badge badge-success">✅ Submitted</span>
+              <button class="btn-dl" onclick="downloadFile('${a.id}')">⬇️ Download</button>
+            </div>
+          </div>`).join("");
+
+        window._myFiles = myFiles;
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    window.downloadFile = function(id) {
+      const a = window._myFiles?.find(x => x.id === id);
+      if (!a?.fileData) return;
+      const link = document.createElement("a");
+      link.href = a.fileData;
+      link.download = a.fileName;
+      link.click();
+    }
+
+    window.logoutUser = function() {
+      signOut(auth).then(() => window.location.href = "login.html");
+    }
+  </script>
+
 </body>
 </html>

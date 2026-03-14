@@ -1,12 +1,28 @@
- <!DOCTYPE html>
+ -<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin — ClassPortal</title>
+  <title>Admin Panel — ClassPortal</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .admin-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+    .admin-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+    }
+  </style>
 </head>
 <body>
+
   <header>
     <a href="index.html" class="header-brand">
       <div class="logo-icon">📚</div>
@@ -15,13 +31,174 @@
     <nav>
       <a href="index.html">Home</a>
       <a href="admin.html" class="active">Admin</a>
-      <button class="nav-logout">Logout</button>
+      <a href="tracker.html">Tracker</a>
+      <a href="assignments.html">Assignments</a>
+      <button class="nav-logout" onclick="logoutUser()">Logout</button>
     </nav>
   </header>
-  <main>
-  </main>
+
+  <!-- Access Denied -->
+  <div class="access-denied" id="accessDenied" style="display:none;">
+    <div class="ad-icon">🚫</div>
+    <h2>Access Denied</h2>
+    <p>Only administrators can access this page.</p>
+    <a href="index.html" class="btn btn-primary">Go to Homepage</a>
+  </div>
+
+  <!-- Admin Content -->
+  <div id="adminContent" style="display:none;">
+    <div class="admin-wrap">
+
+      <div class="section-banner fade-up">
+        <div class="s-badge">⚙️ Admin Only</div>
+        <h2>Admin <span>Control Panel</span></h2>
+        <p>Manage students, view submissions, and control your portal</p>
+      </div>
+
+      <div class="card fade-up-2">
+        <div class="card-title">⚡ Quick Actions</div>
+        <div class="admin-grid">
+          <a href="assignments.html" class="stat-card">
+            <div class="stat-icon si-blue">📥</div>
+            <div>
+              <strong>View Assignments</strong>
+              <small>Download & manage</small>
+            </div>
+          </a>
+          <a href="tracker.html" class="stat-card">
+            <div class="stat-icon si-purple">📋</div>
+            <div>
+              <strong>Assignment Tracker</strong>
+              <small>Update status</small>
+            </div>
+          </a>
+          <a href="https://console.firebase.google.com/project/my-e-portal/authentication/users"
+             target="_blank" class="stat-card">
+            <div class="stat-icon si-gold">👥</div>
+            <div>
+              <strong>Manage Students</strong>
+              <small>Firebase console</small>
+            </div>
+          </a>
+          <a href="https://console.firebase.google.com/project/my-e-portal/firestore"
+             target="_blank" class="stat-card">
+            <div class="stat-icon si-green">🔥</div>
+            <div>
+              <strong>Firestore Database</strong>
+              <small>View all data</small>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="card fade-up-3">
+        <div class="card-title">
+          📥 Recent Submissions
+          <span class="ct-badge" id="totalCount">0</span>
+        </div>
+        <div id="recentList">
+          <div class="empty-state">
+            <div class="es-icon">⏳</div>
+            <p>Loading submissions...</p>
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:16px;">
+          <a href="assignments.html" class="btn btn-outline">View All Assignments →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <footer>
-    <p>© 2025 <span>ClassPortal</span></p>
+    <p>© 2025 <span>ClassPortal</span> — Assignment Submission System</p>
   </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD2gg4JLsd-Q0vPRYuukZ3oujb6RiR53NE",
+      authDomain: "my-e-portal.firebaseapp.com",
+      projectId: "my-e-portal",
+      storageBucket: "my-e-portal.firebasestorage.app",
+      messagingSenderId: "628881859766",
+      appId: "1:628881859766:web:e45df5cb372d58960c7217"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const courseNames = {
+      gdpr: "EU GDPR & Data Security",
+      future: "Future Proofing your Business",
+      investigations: "Investigations & Incident Response",
+      mobile: "Mobile Device & Data Risks",
+      network: "Network Architecture & Protocols",
+      threat: "Threat & Risk: Expecting the Unexpected"
+    };
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+      } else if (user.email !== "admin@eportal.com") {
+        document.getElementById("accessDenied").style.display = "flex";
+      } else {
+        document.getElementById("adminContent").style.display = "block";
+        await loadRecent();
+      }
+    });
+
+    async function loadRecent() {
+      try {
+        const q = query(
+          collection(db, "assignments"),
+          orderBy("uploadedAt", "desc"),
+          limit(5)
+        );
+        const snapshot = await getDocs(q);
+        const items = [];
+        snapshot.forEach(d => items.push({ id: d.id, ...d.data() }));
+
+        // Get total count
+        const allSnap = await getDocs(collection(db, "assignments"));
+        document.getElementById("totalCount").textContent = allSnap.size;
+
+        const container = document.getElementById("recentList");
+        if (items.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="es-icon">📭</div>
+              <p>No assignments submitted yet.</p>
+            </div>`;
+          return;
+        }
+
+        container.innerHTML = items.map(a => `
+          <div class="assign-row">
+            <div class="ar-info">
+              <strong>${a.assignmentTitle || "Untitled"}</strong>
+              <div class="ar-meta">
+                <span>👤 ${a.studentName}</span>
+                <span>🪪 ${a.rollNumber}</span>
+                <span>📚 ${courseNames[a.course] || a.course}</span>
+                <span>🕒 ${a.uploadedAt ? new Date(a.uploadedAt.seconds * 1000).toLocaleDateString() : "N/A"}</span>
+              </div>
+            </div>
+            <span class="badge badge-success">✅ Submitted</span>
+          </div>`).join("");
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    window.logoutUser = function() {
+      signOut(auth).then(() => window.location.href = "login.html");
+    }
+  </script>
+
 </body>
 </html>
