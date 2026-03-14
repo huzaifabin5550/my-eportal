@@ -3,11 +3,61 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin — ClassPortal</title>
+  <title>Admin Panel — ClassPortal</title>
   <link rel="stylesheet" href="style.css" />
   <style>
+    .admin-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+    .admin-card {
+      background: white;
+      border-radius: 14px;
+      padding: 26px 22px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.25s;
+      cursor: pointer;
+    }
+    .admin-card:hover {
+      border-color: var(--blue);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+    }
+    .admin-card .ac-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+    .ac-blue { background: rgba(59,130,246,0.12); }
+    .ac-gold { background: rgba(245,158,11,0.12); }
+    .ac-green { background: rgba(22,163,74,0.12); }
+    .ac-red { background: rgba(239,68,68,0.12); }
+    .admin-card strong {
+      display: block;
+      font-family: 'Sora', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 3px;
+    }
+    .admin-card small {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
     .admin-banner {
-      background: linear-gradient(135deg, #1e293b, #1a3a5c);
+      background: linear-gradient(135deg, var(--navy), #1a3a5c);
       color: white;
       padding: 36px 40px;
       border-radius: var(--radius);
@@ -38,52 +88,6 @@
     }
     .admin-banner h2 span { color: var(--gold); }
     .admin-banner p { color: #94a3b8; font-size: 0.9rem; }
-    .admin-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-    }
-    .admin-stat {
-      background: white;
-      border-radius: 12px;
-      padding: 24px;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      text-decoration: none;
-      color: var(--text);
-      transition: all 0.25s;
-    }
-    .admin-stat:hover {
-      border-color: var(--blue);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-hover);
-    }
-    .admin-stat .s-icon {
-      width: 46px;
-      height: 46px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(245,158,11,0.12));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.3rem;
-      flex-shrink: 0;
-    }
-    .admin-stat .s-text strong {
-      display: block;
-      font-family: 'Sora', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--navy);
-      margin-bottom: 3px;
-    }
-    .admin-stat .s-text span {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
     .sheets-wrapper {
       background: white;
       border-radius: var(--radius);
@@ -108,10 +112,23 @@
       padding-bottom: 18px;
       border-bottom: 1px solid var(--border);
     }
-    iframe {
-      border-radius: 10px;
-      display: block;
+    .access-denied {
+      min-height: calc(100vh - 68px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      text-align: center;
+      padding: 40px;
     }
+    .access-denied .icon { font-size: 4rem; }
+    .access-denied h2 {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.5rem;
+      color: var(--navy);
+    }
+    .access-denied p { color: var(--text-muted); }
   </style>
 </head>
 <body>
@@ -124,42 +141,67 @@
     <nav>
       <a href="index.html">Home</a>
       <a href="admin.html" class="active">Admin</a>
+      <a href="submit.html">Submit Form</a>
       <button class="nav-logout" onclick="logoutUser()">Logout</button>
     </nav>
   </header>
 
-  <main>
+  <!-- ACCESS DENIED (shown if not admin) -->
+  <div class="access-denied" id="accessDenied" style="display:none;">
+    <div class="icon">🚫</div>
+    <h2>Access Denied</h2>
+    <p>You don't have permission to view this page.</p>
+    <a href="index.html" class="btn btn-primary">Go to Homepage</a>
+  </div>
+
+  <!-- ADMIN CONTENT (hidden until verified) -->
+  <main id="adminContent" style="display:none;">
+
     <div class="admin-banner fade-up">
       <div>
-        <div class="badge">⚙️ Admin Panel</div>
-        <h2>Admin <span>Dashboard</span></h2>
-        <p>Manage students, view submissions, and control your portal</p>
+        <div class="badge">⚙️ Admin Only</div>
+        <h2>Admin <span>Control Panel</span></h2>
+        <p>Manage students, monitor submissions, and control your portal</p>
       </div>
+      <a href="https://console.firebase.google.com/project/my-e-portal/authentication/users"
+         target="_blank" class="btn btn-gold">
+        👥 Manage Students
+      </a>
     </div>
 
-    <div class="admin-stats fade-up-2">
-      <a href="https://console.firebase.google.com/project/my-e-portal/authentication/users"
-         target="_blank" class="admin-stat">
-        <div class="s-icon">👥</div>
-        <div class="s-text">
-          <strong>Registered Students</strong>
-          <span>View in Firebase Console</span>
-        </div>
-      </a>
-      <a href="https://docs.google.com/spreadsheets" target="_blank" class="admin-stat">
-        <div class="s-icon">📊</div>
-        <div class="s-text">
-          <strong>Google Sheets</strong>
-          <span>Open full submissions</span>
-        </div>
-      </a>
-      <a href="submit.html" class="admin-stat">
-        <div class="s-icon">📤</div>
-        <div class="s-text">
-          <strong>Submit Form</strong>
-          <span>View student form</span>
-        </div>
-      </a>
+    <div class="card fade-up-2">
+      <h2>⚡ Quick Actions</h2>
+      <div class="admin-grid">
+        <a href="https://console.firebase.google.com/project/my-e-portal/authentication/users"
+           target="_blank" class="admin-card">
+          <div class="ac-icon ac-blue">👥</div>
+          <div>
+            <strong>Registered Students</strong>
+            <small>View & manage in Firebase</small>
+          </div>
+        </a>
+        <a href="https://docs.google.com/spreadsheets" target="_blank" class="admin-card">
+          <div class="ac-icon ac-green">📊</div>
+          <div>
+            <strong>Google Sheets</strong>
+            <small>Open full submissions</small>
+          </div>
+        </a>
+        <a href="submit.html" class="admin-card">
+          <div class="ac-icon ac-gold">📤</div>
+          <div>
+            <strong>Submission Form</strong>
+            <small>Preview student form</small>
+          </div>
+        </a>
+        <a href="https://console.firebase.google.com" target="_blank" class="admin-card">
+          <div class="ac-icon ac-red">🔥</div>
+          <div>
+            <strong>Firebase Console</strong>
+            <small>Full backend control</small>
+          </div>
+        </a>
+      </div>
     </div>
 
     <div class="sheets-wrapper fade-up-3">
@@ -172,6 +214,7 @@
         frameborder="0">
       </iframe>
     </div>
+
   </main>
 
   <footer>
@@ -181,6 +224,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
     const firebaseConfig = {
       apiKey: "AIzaSyD2gg4JLsd-Q0vPRYuukZ3oujb6RiR53NE",
       authDomain: "my-e-portal.firebaseapp.com",
@@ -189,12 +233,21 @@
       messagingSenderId: "628881859766",
       appId: "1:628881859766:web:e45df5cb372d58960c7217"
     };
+
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
     onAuthStateChanged(auth, (user) => {
-      if (!user || user.email !== "admin@eportal.com") {
+      if (!user) {
+        // Not logged in → redirect to login
         window.location.href = "login.html";
+      } else if (user.email !== "admin@eportal.com") {
+        // Logged in but NOT admin → show access denied
+        document.getElementById("accessDenied").style.display = "flex";
+      } else {
+        // Admin verified ✅ → show content
+        document.getElementById("adminContent").style.display = "flex";
+        document.getElementById("adminContent").style.flexDirection = "column";
       }
     });
 
