@@ -607,8 +607,7 @@ footer span { color: var(--gold); }
   background: rgba(255,255,255,0.08);
 }
 
-.dropdown-menu {
-  display: none;
+ 
   position: absolute;
   top: calc(100% + 8px);
   left: 50%;
@@ -622,8 +621,23 @@ footer span { color: var(--gold); }
   z-index: 9999;
 }
 
-.dropdown:hover .dropdown-menu {
+ .dropdown-menu {
   display: block;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  transition-delay: 0s;
+}
+
+.dropdown:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0.1s;
+}
+
+.dropdown-menu:hover {
+  opacity: 1;
+  visibility: visible;
 }
 
 .dropdown-menu a {
