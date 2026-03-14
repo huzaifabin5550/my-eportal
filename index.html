@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>My Class ePortal</title>
+  <title>Home — ClassPortal</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
   <header>
     <a href="index.html" class="header-brand">
       <div class="logo-icon">📚</div>
@@ -15,92 +14,14 @@
     </a>
     <nav>
       <a href="index.html" class="active">Home</a>
-      <a href="submit.html">Submit</a>
-      <a href="dashboard.html">Dashboard</a>
-      <div class="dropdown" id="loginDropdown">
-        <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event)">Log In ▾</a>
-        <div class="dropdown-menu" id="dropdownMenu">
-          <a href="login.html?role=admin">
-            <span>🛡️</span>
-            <div>
-              <strong>Login as Admin</strong>
-              <small>Teacher / Manager</small>
-            </div>
-          </a>
-          <a href="login.html?role=student">
-            <span>🎓</span>
-            <div>
-              <strong>Login as Student</strong>
-              <small>Class member</small>
-            </div>
-          </a>
-        </div>
-      </div>
+      <a href="login.html">Login</a>
       <a href="signup.html" class="btn-nav">Sign Up</a>
     </nav>
   </header>
-
-  <div class="hero">
-    <div class="hero-badge">🎓 Academic Year 2025</div>
-    <h1 class="fade-up">Your Digital <span>Classroom</span><br/>Starts Here</h1>
-    <p class="fade-up-2">Submit assignments, track your progress, and stay connected with your class — all in one secure platform.</p>
-    <div class="hero-btns fade-up-3">
-      <a href="signup.html" class="btn btn-primary">Get Started</a>
-      <a href="login.html" class="btn btn-secondary">Login to Portal</a>
-    </div>
-  </div>
-
-  <div class="grid">
-    <a href="signup.html" class="grid-card fade-up">
-      <div class="icon">📝</div>
-      <h3>Sign Up</h3>
-      <p>Create your student account and join your class portal</p>
-    </a>
-    <a href="login.html" class="grid-card fade-up-2">
-      <div class="icon">🔐</div>
-      <h3>Login</h3>
-      <p>Access your personal dashboard securely</p>
-    </a>
-    <a href="submit.html" class="grid-card fade-up-3">
-      <div class="icon">📤</div>
-      <h3>Submit Assignment</h3>
-      <p>Upload and submit your work before the deadline</p>
-    </a>
-    <a href="dashboard.html" class="grid-card fade-up-4">
-      <div class="icon">📊</div>
-      <h3>My Dashboard</h3>
-      <p>View announcements and your submission history</p>
-    </a>
-  </div>
-
-  <div class="announce-section">
-    <div class="card">
-      <h2>📢 Latest Announcements</h2>
-      <ul>
-        <li>📌 Assignment 1 is due this Friday at 11:59 PM</li>
-        <li>📌 Upload files in PDF or DOCX format only</li>
-        <li>📌 Contact your teacher if you face any login issues</li>
-        <li>📌 New assignments will be posted every Monday</li>
-      </ul>
-    </div>
-  </div>
-
+  <main>
+  </main>
   <footer>
-    <p>© 2025 <span>ClassPortal</span> — Built for Students, Managed by Teachers</p>
+    <p>© 2025 <span>ClassPortal</span></p>
   </footer>
-
-  <script>
-    function toggleDropdown(e) {
-      e.preventDefault();
-      const menu = document.getElementById("dropdownMenu");
-      menu.classList.toggle("open");
-    }
-    document.addEventListener("click", function(e) {
-      if (!document.getElementById("loginDropdown").contains(e.target)) {
-        document.getElementById("dropdownMenu").classList.remove("open");
-      }
-    });
-  </script>
-
 </body>
 </html>

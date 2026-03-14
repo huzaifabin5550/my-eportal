@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
   <header>
     <a href="index.html" class="header-brand">
       <div class="logo-icon">📚</div>
@@ -15,98 +14,14 @@
     </a>
     <nav>
       <a href="index.html">Home</a>
-      <a href="submit.html">Submit</a>
       <a href="login.html">Login</a>
       <a href="signup.html" class="active btn-nav">Sign Up</a>
     </nav>
   </header>
-
-  <div class="auth-wrapper">
-    <div class="auth-box fade-up">
-      <div class="auth-header">
-        <div class="auth-icon">📝</div>
-        <h2>Create Account</h2>
-        <p class="subtitle">Join your class portal in seconds</p>
-      </div>
-
-      <div class="form-group">
-        <label>Full Name</label>
-        <input type="text" id="name" placeholder="Your full name" />
-      </div>
-      <div class="form-group">
-        <label>Email Address</label>
-        <input type="email" id="email" placeholder="you@example.com" />
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="password" placeholder="Minimum 6 characters" />
-      </div>
-
-      <button class="btn btn-primary btn-full" onclick="signupUser()">
-        Create My Account
-      </button>
-
-      <div id="error-msg" class="msg msg-error" style="display:none;"></div>
-      <div id="success-msg" class="msg msg-success" style="display:none;"></div>
-
-      <div class="auth-footer">
-        Already have an account? <a href="login.html">Login here</a>
-      </div>
-    </div>
-  </div>
-
+  <main>
+  </main>
   <footer>
-    <p>© 2025 <span>ClassPortal</span> — Built for Students, Managed by Teachers</p>
+    <p>© 2025 <span>ClassPortal</span></p>
   </footer>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    const firebaseConfig = {
-      apiKey: "AIzaSyD2gg4JLsd-Q0vPRYuukZ3oujb6RiR53NE",
-      authDomain: "my-e-portal.firebaseapp.com",
-      projectId: "my-e-portal",
-      storageBucket: "my-e-portal.firebasestorage.app",
-      messagingSenderId: "628881859766",
-      appId: "1:628881859766:web:e45df5cb372d58960c7217"
-    };
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    window.signupUser = function() {
-      const name = document.getElementById("name").value;
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      const errorMsg = document.getElementById("error-msg");
-      const successMsg = document.getElementById("success-msg");
-      errorMsg.style.display = "none";
-      successMsg.style.display = "none";
-
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          return updateProfile(userCredential.user, { displayName: name });
-        })
-        .then(() => {
-          successMsg.textContent = "✅ Account created! Redirecting to login...";
-          successMsg.style.display = "block";
-          setTimeout(() => window.location.href = "login.html", 2000);
-        })
-        .catch((error) => {
-          if (error.code === "auth/email-already-in-use") {
-            errorMsg.textContent = "❌ This email is already registered.";
-          } else if (error.code === "auth/weak-password") {
-            errorMsg.textContent = "❌ Password must be at least 6 characters.";
-          } else {
-            errorMsg.textContent = "❌ Signup failed. Please try again.";
-          }
-          errorMsg.style.display = "block";
-        });
-    }
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") signupUser();
-    });
-  </script>
-
 </body>
 </html>

@@ -5,90 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard — ClassPortal</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    .welcome-banner {
-      background: linear-gradient(135deg, var(--navy), #1a3a5c);
-      color: white;
-      padding: 36px 40px;
-      border-radius: var(--radius);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-    .welcome-banner h2 {
-      font-family: 'Sora', sans-serif;
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .welcome-banner h2 span { color: var(--gold); }
-    .welcome-banner p { color: #94a3b8; font-size: 0.9rem; }
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 16px;
-    }
-    .stat-card {
-      background: white;
-      border-radius: 12px;
-      padding: 22px;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      text-align: center;
-    }
-    .stat-card .stat-num {
-      font-family: 'Sora', sans-serif;
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--blue);
-    }
-    .stat-card .stat-label {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-    .quick-actions {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 14px;
-    }
-    .action-btn {
-      background: white;
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      padding: 18px 20px;
-      text-decoration: none;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 500;
-      font-size: 0.92rem;
-      transition: all 0.25s;
-    }
-    .action-btn:hover {
-      border-color: var(--blue);
-      color: var(--blue);
-      background: rgba(59,130,246,0.04);
-      transform: translateY(-2px);
-    }
-    .action-btn .a-icon {
-      width: 38px;
-      height: 38px;
-      background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(245,158,11,0.1));
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-      flex-shrink: 0;
-    }
-  </style>
 </head>
 <body>
-
   <header>
     <a href="index.html" class="header-brand">
       <div class="logo-icon">📚</div>
@@ -96,100 +14,14 @@
     </a>
     <nav>
       <a href="index.html">Home</a>
-      <a href="submit.html">Submit</a>
       <a href="dashboard.html" class="active">Dashboard</a>
-      <button class="nav-logout" onclick="logoutUser()">Logout</button>
+      <button class="nav-logout">Logout</button>
     </nav>
   </header>
-
   <main>
-    <div class="welcome-banner fade-up">
-      <div>
-        <h2>Welcome back, <span id="student-name">Student</span> 👋</h2>
-        <p>Here's your ClassPortal overview for today</p>
-      </div>
-      <a href="submit.html" class="btn btn-gold">+ Submit Assignment</a>
-    </div>
-
-     <div class="stats fade-up-2">
-      <a href="submit.html" class="stat-card">
-        <div class="stat-num">📤</div>
-        <div class="stat-label">Submit Assignment</div>
-      </a>
-      <a href="#announcements" class="stat-card">
-        <div class="stat-num">📢</div>
-        <div class="stat-label">Announcements</div>
-      </a>
-      <a href="index.html" class="stat-card">
-        <div class="stat-num">🎓</div>
-        <div class="stat-label">Student Portal</div>
-      </a>
-    </div>
-
-    <div class="card fade-up-3">
-      <h2>⚡ Quick Actions</h2>
-       <div class="quick-actions">
-        <a href="submit.html" class="action-btn">
-          <div class="a-icon">📤</div>
-          Submit Assignment
-        </a>
-        <a href="index.html" class="action-btn">
-          <div class="a-icon">🏠</div>
-          Go to Home
-        </a>
-        <a href="#announcements" class="action-btn">
-          <div class="a-icon">📢</div>
-          Announcements
-        </a>
-        <a href="status.html" class="action-btn">
-          <div class="a-icon">📊</div>
-          Assignment Status
-        </a>
-      </div>
-    </div>
-
-    <div class="card fade-up-4" id="announcements">
-      <h2>📢 Announcements</h2>
-      <ul>
-        <li>📌 Assignment 1 is due this Friday at 11:59 PM</li>
-        <li>📌 Upload files in PDF or DOCX format only</li>
-        <li>📌 Contact your teacher if you face any issues</li>
-        <li>📌 New assignments posted every Monday</li>
-      </ul>
-    </div>
   </main>
-
   <footer>
-    <p>© 2025 <span>ClassPortal</span> — Built for Students, Managed by Teachers</p>
+    <p>© 2025 <span>ClassPortal</span></p>
   </footer>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    const firebaseConfig = {
-      apiKey: "AIzaSyD2gg4JLsd-Q0vPRYuukZ3oujb6RiR53NE",
-      authDomain: "my-e-portal.firebaseapp.com",
-      projectId: "my-e-portal",
-      storageBucket: "my-e-portal.firebasestorage.app",
-      messagingSenderId: "628881859766",
-      appId: "1:628881859766:web:e45df5cb372d58960c7217"
-    };
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        document.getElementById("student-name").textContent =
-          user.displayName || user.email.split("@")[0];
-      } else {
-        window.location.href = "login.html";
-      }
-    });
-
-    window.logoutUser = function() {
-      signOut(auth).then(() => window.location.href = "login.html");
-    }
-  </script>
-
 </body>
 </html>
