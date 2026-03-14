@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -44,6 +44,7 @@
       padding: 36px;
       box-shadow: var(--shadow);
       border: 1px solid var(--border);
+      margin-bottom: 24px;
     }
     .upload-card h3 {
       font-family: 'Sora', sans-serif;
@@ -60,9 +61,7 @@
       gap: 16px;
       margin-bottom: 16px;
     }
-    .form-group {
-      margin-bottom: 16px;
-    }
+    .form-group { margin-bottom: 16px; }
     .form-group label {
       display: block;
       font-size: 0.85rem;
@@ -92,6 +91,11 @@
       background: white;
       box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
     }
+    .form-group input:disabled {
+      background: #e2e8f0;
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
     .form-group textarea {
       resize: vertical;
       min-height: 100px;
@@ -111,18 +115,9 @@
     }
     .file-upload input { display: none; }
     .file-upload .upload-icon { font-size: 2.5rem; margin-bottom: 10px; }
-    .file-upload p {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      margin: 0;
-    }
+    .file-upload p { font-size: 0.88rem; color: var(--text-muted); margin: 0; }
     .file-upload strong { color: var(--blue); }
-    #fileName {
-      margin-top: 10px;
-      font-size: 0.85rem;
-      color: var(--blue);
-      font-weight: 600;
-    }
+    #fileName { margin-top: 10px; font-size: 0.85rem; color: var(--blue); font-weight: 600; }
     .progress-bar {
       width: 100%;
       height: 6px;
@@ -146,6 +141,77 @@
       margin-top: 16px;
       display: none;
     }
+    .my-uploads h3 {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .upload-row {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      transition: all 0.2s;
+    }
+    .upload-row:hover {
+      border-color: var(--blue);
+      box-shadow: var(--shadow-hover);
+    }
+    .upload-row .info strong {
+      display: block;
+      font-family: 'Sora', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+    .upload-row .info .meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .course-tag {
+      background: rgba(59,130,246,0.1);
+      color: var(--blue);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .btn-download {
+      padding: 8px 16px;
+      background: #dcfce7;
+      color: #16a34a;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s;
+    }
+    .btn-download:hover { background: #bbf7d0; }
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+    }
+    .empty-state .icon { font-size: 2.5rem; margin-bottom: 10px; }
   </style>
 </head>
 <body>
@@ -206,7 +272,7 @@
       <div class="form-row">
         <div class="form-group">
           <label>Email Address *</label>
-          <input type="email" id="email" placeholder="you@example.com" />
+          <input type="email" id="email" id="email" placeholder="Auto-filled from login" disabled />
         </div>
         <div class="form-group">
           <label>Course Name *</label>
@@ -234,7 +300,7 @@
             accept=".pdf,.doc,.docx,.ppt,.pptx,.zip"
             onchange="handleFile()" />
           <div class="upload-icon">📁</div>
-          <p><strong>Click to browse</strong> or drag and drop your file here</p>
+          <p><strong>Click to browse</strong> or drag and drop</p>
           <p>PDF, DOCX, PPTX, ZIP accepted</p>
           <div id="fileName"></div>
         </div>
@@ -251,8 +317,20 @@
       <button class="btn btn-primary btn-full" onclick="uploadAssignment()">
         📤 Upload Assignment
       </button>
-
       <div id="uploadMsg" class="msg"></div>
+    </div>
+
+    <div class="upload-card my-uploads fade-up-3">
+      <h3>
+        📂 My Uploaded Assignments
+        <span class="course-tag" id="myCount">0 files</span>
+      </h3>
+      <div id="myUploadsList">
+        <div class="empty-state">
+          <div class="icon">⏳</div>
+          <p>Loading your uploads...</p>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -264,7 +342,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, setDoc, getDoc, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD2gg4JLsd-Q0vPRYuukZ3oujb6RiR53NE",
@@ -279,66 +357,73 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    const courseNames = {
+      gdpr: "EU GDPR & Data Security",
+      future: "Future Proofing your Business",
+      investigations: "Investigations & Incident Response",
+      mobile: "Mobile Device & Data Risks",
+      network: "Network Architecture & Protocols",
+      threat: "Threat & Risk: Expecting the Unexpected"
+    };
+
+    let currentUser = null;
     let fileData = null;
     let fileName = null;
     let fileType = null;
 
-    onAuthStateChanged(auth, (user) => {
-      if (!user) window.location.href = "login.html";
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+      } else {
+        currentUser = user;
+        document.getElementById("email").value = user.email;
+        await loadMyUploads();
+      }
     });
 
     window.handleFile = function() {
       const file = document.getElementById("fileInput").files[0];
       if (!file) return;
-
       if (file.size > 5 * 1024 * 1024) {
         document.getElementById("fileName").textContent = "❌ File too large. Max 5MB.";
         document.getElementById("fileName").style.color = "red";
         fileData = null;
         return;
       }
-
       fileName = file.name;
       fileType = file.type;
       document.getElementById("fileName").textContent = "📎 " + file.name;
       document.getElementById("fileName").style.color = "var(--blue)";
-
       const reader = new FileReader();
       const progressBar = document.getElementById("progressBar");
       const progressFill = document.getElementById("progressFill");
       progressBar.style.display = "block";
-
       reader.onprogress = (e) => {
         if (e.lengthComputable) {
-          const pct = (e.loaded / e.total) * 100;
-          progressFill.style.width = pct + "%";
+          progressFill.style.width = (e.loaded / e.total * 100) + "%";
         }
       };
-
       reader.onload = (e) => {
         fileData = e.target.result;
         progressFill.style.width = "100%";
       };
-
       reader.readAsDataURL(file);
     }
 
     window.uploadAssignment = async function() {
       const student = document.getElementById("studentName").value;
       const roll = document.getElementById("rollNumber").value;
-      const email = document.getElementById("email").value;
       const course = document.getElementById("courseName").value;
       const title = document.getElementById("assignmentTitle").value;
       const notes = document.getElementById("notes").value;
       const uploadMsg = document.getElementById("uploadMsg");
 
-      if (!student || !roll || !email || !course || !title) {
+      if (!student || !roll || !course || !title) {
         uploadMsg.textContent = "❌ Please fill in all required fields.";
         uploadMsg.className = "msg msg-error";
         uploadMsg.style.display = "block";
         return;
       }
-
       if (!fileData) {
         uploadMsg.textContent = "❌ Please upload a file.";
         uploadMsg.className = "msg msg-error";
@@ -352,9 +437,10 @@
 
       try {
         await addDoc(collection(db, "assignments"), {
+          userId: currentUser.uid,
           studentName: student,
           rollNumber: roll,
-          email: email,
+          email: currentUser.email,
           course: course,
           assignmentTitle: title,
           notes: notes,
@@ -364,8 +450,7 @@
           uploadedAt: serverTimestamp()
         });
 
-        // Update tracker status
-        const { doc, getDoc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+        // Update tracker
         const docRef = doc(db, "tracker", "submissions");
         const docSnap = await getDoc(docRef);
         let data = docSnap.exists() ? docSnap.data() : {};
@@ -373,13 +458,12 @@
         data[student][course] = true;
         await setDoc(docRef, data);
 
-        uploadMsg.textContent = "✅ Assignment uploaded successfully! Your submission status has been updated.";
+        uploadMsg.textContent = "✅ Assignment uploaded successfully!";
         uploadMsg.className = "msg msg-success";
 
-        // Reset form
+        // Reset
         document.getElementById("studentName").value = "";
         document.getElementById("rollNumber").value = "";
-        document.getElementById("email").value = "";
         document.getElementById("courseName").value = "";
         document.getElementById("assignmentTitle").value = "";
         document.getElementById("notes").value = "";
@@ -388,11 +472,67 @@
         document.getElementById("progressFill").style.width = "0%";
         fileData = null;
 
+        await loadMyUploads();
+
       } catch (err) {
         uploadMsg.textContent = "❌ Upload failed. Please try again.";
         uploadMsg.className = "msg msg-error";
         console.error(err);
       }
+    }
+
+    async function loadMyUploads() {
+      try {
+        const q = query(
+          collection(db, "assignments"),
+          where("userId", "==", currentUser.uid),
+          orderBy("uploadedAt", "desc")
+        );
+        const snapshot = await getDocs(q);
+        const myUploads = [];
+        snapshot.forEach(d => myUploads.push({ id: d.id, ...d.data() }));
+
+        document.getElementById("myCount").textContent = myUploads.length + " files";
+        const container = document.getElementById("myUploadsList");
+
+        if (myUploads.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="icon">📭</div>
+              <p>You haven't uploaded any assignments yet.</p>
+            </div>`;
+          return;
+        }
+
+        container.innerHTML = myUploads.map(a => `
+          <div class="upload-row">
+            <div class="info">
+              <strong>${a.assignmentTitle}</strong>
+              <div class="meta">
+                <span>📎 ${a.fileName}</span>
+                <span>🕒 ${a.uploadedAt ? new Date(a.uploadedAt.seconds * 1000).toLocaleDateString() : "Just now"}</span>
+              </div>
+            </div>
+            <span class="course-tag">${courseNames[a.course] || a.course}</span>
+            <button class="btn-download" onclick="downloadFile('${a.id}', '${a.fileName}', '${a.fileData?.substring(0, 30)}')">⬇️ Download</button>
+          </div>
+        `).join("");
+
+        // Store for download
+        window._myUploads = myUploads;
+
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    window.downloadFile = function(id) {
+      const assignment = window._myUploads?.find(a => a.id === id);
+      if (!assignment?.fileData) return;
+      const link = document.createElement("a");
+      link.href = assignment.fileData;
+      link.download = assignment.fileName;
+      link.click();
     }
 
     window.logoutUser = function() {
@@ -402,3 +542,4 @@
 
 </body>
 </html>
+ 
