@@ -17,9 +17,9 @@
       <a href="index.html" class="active">Home</a>
       <a href="submit.html">Submit</a>
       <a href="dashboard.html">Dashboard</a>
-      <div class="dropdown">
-        <a href="#" class="dropdown-toggle">Login ▾</a>
-        <div class="dropdown-menu">
+      <div class="dropdown" id="loginDropdown">
+        <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event)">Log In ▾</a>
+        <div class="dropdown-menu" id="dropdownMenu">
           <a href="login.html?role=admin">
             <span>🛡️</span>
             <div>
@@ -88,6 +88,19 @@
   <footer>
     <p>© 2025 <span>ClassPortal</span> — Built for Students, Managed by Teachers</p>
   </footer>
+
+  <script>
+    function toggleDropdown(e) {
+      e.preventDefault();
+      const menu = document.getElementById("dropdownMenu");
+      menu.classList.toggle("open");
+    }
+    document.addEventListener("click", function(e) {
+      if (!document.getElementById("loginDropdown").contains(e.target)) {
+        document.getElementById("dropdownMenu").classList.remove("open");
+      }
+    });
+  </script>
 
 </body>
 </html>
