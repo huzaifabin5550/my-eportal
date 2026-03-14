@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Assignments — ClassPortal Admin</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .assign-wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 30px;
+    }
+    .assign-banner {
+      background: linear-gradient(135deg, var(--navy), #1a3a5c);
+      color: white;
+      padding: 36px 40px;
+      border-radius: var(--radius);
+      margin-bottom: 28px;
+    }
+    .assign-banner .badge {
+      display: inline-block;
+      background: rgba(245,158,11,0.2);
+      border: 1px solid rgba(245,158,11,0.4);
+      color: var(--gold);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .assign-banner h2 {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .assign-banner h2 span { color: var(--gold); }
+    .assign-banner p { color: #94a3b8; font-size: 0.9rem; }
+    .search-bar {
+      background: white;
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-bottom: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto;
+      gap: 14px;
+      align-items: end;
+    }
+    .search-bar .form-group {
+      margin: 0;
+    }
+    .search-bar label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+    .search-bar input,
+    .search-bar select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      background: #f8fafc;
+      outline: none;
+      box-sizing: border-box;
+    }
+    .search-bar input:focus,
+    .search-bar select:focus {
+      border-color: var(--blue);
+    }
+    .assignments-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+    .assignments-card h3 {
+      font-family: 'Sora', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .count-badge {
+      background: var(--blue);
+      color: white;
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .assignment-row {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      transition: all 0.2s;
+    }
+    .assignment-row:hover {
+      border-color: var(--blue);
+      box-shadow: var(--shadow-hover);
+    }
+    .assignment-info { flex: 1; min-width: 200px; }
+    .assignment-info strong {
+      font-family: 'Sora', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--navy);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .assignment-info .meta {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .assignment-info .meta span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .course-tag {
+      background: rgba(59,130,246,0.1);
+      color: var(--blue);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .action-btns {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .btn-download {
+      padding: 8px 16px;
+      background: #dcfce7;
+      color: #16a34a;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s;
+    }
+    .btn-download:hover { background: #bbf7d0; }
+    .btn-delete {
+      padding: 8px 16px;
+      background: #fee2e2;
+      color: #ef4444;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s;
+    }
+    .btn-delete:hover { background: #fecaca; }
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+    .empty-state .icon { font-size: 3rem; margin-bottom: 12px; }
+    .access-denied {
+      min-height: calc(100vh - 68px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      text-align: center;
+      padding: 40px;
+    }
+    .access-denied h2 {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.5rem;
+      color: var(--navy);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="header-brand">
+      <div class="logo-icon">📚</div>
+      <span>Class<em>Portal</em></span>
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="admin.html">Admin</a>
+      <a href="assignments.html" class="active">Assignments</a>
+      <button class="nav-logout" onclick="logoutUser()">Logout</button>
+    </nav>
+  </header>
+
+  <!-- ACCESS DENIED -->
+  <div class="access-denied" id="accessDenied" style="display:none;">
+    <div style="font-size:4rem;">🚫</div>
+    <h2>Access Denied</h2>
+    <p>You don't have permission to view this page.</p>
+    <a href="index.html" class="btn btn-primary">Go to Homepage</a>
+  </div>
+
+  <!-- ADMIN CONTENT -->
+  <div id="adminContent" style="display:none;">
+    <div class="assign-wrapper">
+
+      <div class="assign-banner fade-up">
+        <div class="badge">📥 Admin Only</div>
+        <h2>All <span>Uploaded Assignments</span></h2>
+        <p>View, download, and manage all student assignment uploads.</p>
+      </div>
+
+      <div class="search-bar fade-up-2">
+        <div class="form-group">
+          <label>Search by Student Name</label>
+          <input type="text" id="searchName" placeholder="e.g. Huzaifa" oninput="filterAssignments()" />
+        </div>
+        <div class="form-group">
+          <label>Search by Roll Number</label>
+          <input type="text" id="searchRoll" placeholder="e.g. 01" oninput="filterAssignments()" />
+        </div>
+        <div class="form-group">
+          <label>Filter by Course</label>
+          <select id="searchCourse" onchange="filterAssignments()">
+            <option value="">All Courses</option>
+            <option value="gdpr">EU GDPR & Data Security</option>
+            <option value="future">Future Proofing your Business</option>
+            <option value="investigations">Investigations & Incident Response</option>
+            <option value="mobile">Mobile Device & Data Risks</option>
+            <option value="network">Network Architecture & Protocols</option>
+            <option value="threat">Threat & Risk: Expecting the Unexpected</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="clearFilters()">Clear</button>
+      </div>
+
+      <div class="assignments-card fade-up-3">
+        <h3>
+          📋 Submissions
+          <span class="count-badge" id="countBadge">0</span>
+        </h3>
+        <div id="assignmentsList">
+          <div class="empty-state">
+            <div class="icon">⏳</div>
+            <p>Loading assignments...</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 <span>ClassPortal</span> — Built for Students, Managed by Teachers</p>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, getDocs, deleteDoc, doc, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD2gg4JLsd-Q0vPRYuukZ3oujb6RiR53NE",
+      authDomain: "my-e-portal.firebaseapp.com",
+      projectId: "my-e-portal",
+      storageBucket: "my-e-portal.firebasestorage.app",
+      messagingSenderId: "628881859766",
+      appId: "1:628881859766:web:e45df5cb372d58960c7217"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const courseNames = {
+      gdpr: "EU GDPR & Data Security",
+      future: "Future Proofing your Business",
+      investigations: "Investigations & Incident Response",
+      mobile: "Mobile Device & Data Risks",
+      network: "Network Architecture & Protocols",
+      threat: "Threat & Risk: Expecting the Unexpected"
+    };
+
+    let allAssignments = [];
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+      } else if (user.email !== "admin@eportal.com") {
+        document.getElementById("accessDenied").style.display = "flex";
+      } else {
+        document.getElementById("adminContent").style.display = "block";
+        await loadAssignments();
+      }
+    });
+
+    async function loadAssignments() {
+      try {
+        const q = query(collection(db, "assignments"), orderBy("uploadedAt", "desc"));
+        const snapshot = await getDocs(q);
+        allAssignments = [];
+        snapshot.forEach(d => {
+          allAssignments.push({ id: d.id, ...d.data() });
+        });
+        renderAssignments(allAssignments);
+      } catch (err) {
+        console.error(err);
+        renderAssignments([]);
+      }
+    }
+
+    function renderAssignments(list) {
+      const container = document.getElementById("assignmentsList");
+      document.getElementById("countBadge").textContent = list.length;
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">📭</div>
+            <p>No assignments found.</p>
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = list.map(a => `
+        <div class="assignment-row">
+          <div class="assignment-info">
+            <strong>${a.assignmentTitle || "Untitled"}</strong>
+            <div class="meta">
+              <span>👤 ${a.studentName}</span>
+              <span>🪪 ${a.rollNumber}</span>
+              <span>📧 ${a.email}</span>
+              <span>📎 ${a.fileName}</span>
+              <span>🕒 ${a.uploadedAt ? new Date(a.uploadedAt.seconds * 1000).toLocaleDateString() : "N/A"}</span>
+            </div>
+          </div>
+          <span class="course-tag">${courseNames[a.course] || a.course}</span>
+          <div class="action-btns">
+            <button class="btn-download" onclick="downloadFile('${a.id}')">⬇️ Download</button>
+            <button class="btn-delete" onclick="deleteAssignment('${a.id}')">🗑️ Delete</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    window.filterAssignments = function() {
+      const name = document.getElementById("searchName").value.toLowerCase();
+      const roll = document.getElementById("searchRoll").value.toLowerCase();
+      const course = document.getElementById("searchCourse").value;
+
+      const filtered = allAssignments.filter(a => {
+        return (
+          (!name || a.studentName?.toLowerCase().includes(name)) &&
+          (!roll || a.rollNumber?.toLowerCase().includes(roll)) &&
+          (!course || a.course === course)
+        );
+      });
+      renderAssignments(filtered);
+    }
+
+    window.clearFilters = function() {
+      document.getElementById("searchName").value = "";
+      document.getElementById("searchRoll").value = "";
+      document.getElementById("searchCourse").value = "";
+      renderAssignments(allAssignments);
+    }
+
+    window.downloadFile = function(id) {
+      const assignment = allAssignments.find(a => a.id === id);
+      if (!assignment || !assignment.fileData) return;
+      const link = document.createElement("a");
+      link.href = assignment.fileData;
+      link.download = assignment.fileName;
+      link.click();
+    }
+
+    window.deleteAssignment = async function(id) {
+      if (!confirm("Are you sure you want to delete this assignment?")) return;
+      try {
+        await deleteDoc(doc(db, "assignments", id));
+        allAssignments = allAssignments.filter(a => a.id !== id);
+        filterAssignments();
+      } catch (err) {
+        alert("Error deleting. Please try again.");
+      }
+    }
+
+    window.logoutUser = function() {
+      signOut(auth).then(() => window.location.href = "login.html");
+    }
+  </script>
+
+</body>
+</html>

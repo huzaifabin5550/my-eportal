@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upload Assignment — ClassPortal</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .upload-wrapper {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 40px 30px;
+    }
+    .upload-header {
+      background: linear-gradient(135deg, var(--navy), #1a3a5c);
+      border-radius: var(--radius);
+      padding: 36px 40px;
+      color: white;
+      margin-bottom: 28px;
+    }
+    .upload-header .badge {
+      display: inline-block;
+      background: rgba(245,158,11,0.2);
+      border: 1px solid rgba(245,158,11,0.4);
+      color: var(--gold);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .upload-header h2 {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .upload-header p { color: #94a3b8; font-size: 0.92rem; }
+    .upload-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 36px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+    .upload-card h3 {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 7px;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      background: #f8fafc;
+      outline: none;
+      transition: all 0.2s;
+      box-sizing: border-box;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--blue);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    .file-upload {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #f8fafc;
+    }
+    .file-upload:hover {
+      border-color: var(--blue);
+      background: rgba(59,130,246,0.03);
+    }
+    .file-upload input { display: none; }
+    .file-upload .upload-icon { font-size: 2.5rem; margin-bottom: 10px; }
+    .file-upload p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+    .file-upload strong { color: var(--blue); }
+    #fileName {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: var(--blue);
+      font-weight: 600;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: var(--border);
+      border-radius: 10px;
+      margin-top: 16px;
+      display: none;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue), var(--gold));
+      border-radius: 10px;
+      width: 0%;
+      transition: width 0.3s;
+    }
+    #uploadMsg {
+      text-align: center;
+      font-size: 0.88rem;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 16px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="header-brand">
+      <div class="logo-icon">📚</div>
+      <span>Class<em>Portal</em></span>
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="upload.html" class="active">Upload</a>
+      <a href="dashboard.html">Dashboard</a>
+      <button class="nav-logout" onclick="logoutUser()">Logout</button>
+    </nav>
+  </header>
+
+  <div class="upload-wrapper">
+
+    <div class="upload-header fade-up">
+      <div class="badge">📤 Assignment Upload</div>
+      <h2>Upload Your Assignment</h2>
+      <p>Fill in all fields, attach your file, and click Upload Assignment.</p>
+    </div>
+
+    <div class="upload-card fade-up-2">
+      <h3>📋 Assignment Upload Form</h3>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Student Full Name *</label>
+          <select id="studentName">
+            <option value="">-- Select your name --</option>
+            <option>Alishba</option>
+            <option>Irfan</option>
+            <option>Maaz Hussain</option>
+            <option>Talha</option>
+            <option>Abrar</option>
+            <option>Huzaifa</option>
+            <option>Naveed</option>
+            <option>Maaz Iqbal</option>
+            <option>Rayan</option>
+            <option>Aqib</option>
+            <option>Sufyan</option>
+            <option>Hannan</option>
+            <option>Babar</option>
+            <option>Ahmad</option>
+            <option>Hassan</option>
+            <option>Faizan</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Student ID / Roll Number *</label>
+          <input type="text" id="rollNumber" placeholder="e.g. 01" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Email Address *</label>
+          <input type="email" id="email" placeholder="you@example.com" />
+        </div>
+        <div class="form-group">
+          <label>Course Name *</label>
+          <select id="courseName">
+            <option value="">-- Select course --</option>
+            <option value="gdpr">EU GDPR & Data Security</option>
+            <option value="future">Future Proofing your Business</option>
+            <option value="investigations">Investigations & Incident Response</option>
+            <option value="mobile">Mobile Device & Data Risks</option>
+            <option value="network">Network Architecture & Protocols</option>
+            <option value="threat">Threat & Risk: Expecting the Unexpected</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Assignment Title *</label>
+        <input type="text" id="assignmentTitle" placeholder="e.g. Assignment 1 — Data Protection Report" />
+      </div>
+
+      <div class="form-group">
+        <label>Upload File * (PDF, DOCX, PPTX, ZIP — max 5MB)</label>
+        <div class="file-upload" onclick="document.getElementById('fileInput').click()">
+          <input type="file" id="fileInput"
+            accept=".pdf,.doc,.docx,.ppt,.pptx,.zip"
+            onchange="handleFile()" />
+          <div class="upload-icon">📁</div>
+          <p><strong>Click to browse</strong> or drag and drop your file here</p>
+          <p>PDF, DOCX, PPTX, ZIP accepted</p>
+          <div id="fileName"></div>
+        </div>
+        <div class="progress-bar" id="progressBar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Notes / Message (optional)</label>
+        <textarea id="notes" placeholder="Any notes for your teacher..."></textarea>
+      </div>
+
+      <button class="btn btn-primary btn-full" onclick="uploadAssignment()">
+        📤 Upload Assignment
+      </button>
+
+      <div id="uploadMsg" class="msg"></div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>© 2025 <span>ClassPortal</span> — Built for Students, Managed by Teachers</p>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD2gg4JLsd-Q0vPRYuukZ3oujb6RiR53NE",
+      authDomain: "my-e-portal.firebaseapp.com",
+      projectId: "my-e-portal",
+      storageBucket: "my-e-portal.firebasestorage.app",
+      messagingSenderId: "628881859766",
+      appId: "1:628881859766:web:e45df5cb372d58960c7217"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let fileData = null;
+    let fileName = null;
+    let fileType = null;
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) window.location.href = "login.html";
+    });
+
+    window.handleFile = function() {
+      const file = document.getElementById("fileInput").files[0];
+      if (!file) return;
+
+      if (file.size > 5 * 1024 * 1024) {
+        document.getElementById("fileName").textContent = "❌ File too large. Max 5MB.";
+        document.getElementById("fileName").style.color = "red";
+        fileData = null;
+        return;
+      }
+
+      fileName = file.name;
+      fileType = file.type;
+      document.getElementById("fileName").textContent = "📎 " + file.name;
+      document.getElementById("fileName").style.color = "var(--blue)";
+
+      const reader = new FileReader();
+      const progressBar = document.getElementById("progressBar");
+      const progressFill = document.getElementById("progressFill");
+      progressBar.style.display = "block";
+
+      reader.onprogress = (e) => {
+        if (e.lengthComputable) {
+          const pct = (e.loaded / e.total) * 100;
+          progressFill.style.width = pct + "%";
+        }
+      };
+
+      reader.onload = (e) => {
+        fileData = e.target.result;
+        progressFill.style.width = "100%";
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    window.uploadAssignment = async function() {
+      const student = document.getElementById("studentName").value;
+      const roll = document.getElementById("rollNumber").value;
+      const email = document.getElementById("email").value;
+      const course = document.getElementById("courseName").value;
+      const title = document.getElementById("assignmentTitle").value;
+      const notes = document.getElementById("notes").value;
+      const uploadMsg = document.getElementById("uploadMsg");
+
+      if (!student || !roll || !email || !course || !title) {
+        uploadMsg.textContent = "❌ Please fill in all required fields.";
+        uploadMsg.className = "msg msg-error";
+        uploadMsg.style.display = "block";
+        return;
+      }
+
+      if (!fileData) {
+        uploadMsg.textContent = "❌ Please upload a file.";
+        uploadMsg.className = "msg msg-error";
+        uploadMsg.style.display = "block";
+        return;
+      }
+
+      uploadMsg.textContent = "⏳ Uploading your assignment...";
+      uploadMsg.className = "msg";
+      uploadMsg.style.display = "block";
+
+      try {
+        await addDoc(collection(db, "assignments"), {
+          studentName: student,
+          rollNumber: roll,
+          email: email,
+          course: course,
+          assignmentTitle: title,
+          notes: notes,
+          fileName: fileName,
+          fileType: fileType,
+          fileData: fileData,
+          uploadedAt: serverTimestamp()
+        });
+
+        // Update tracker status
+        const { doc, getDoc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+        const docRef = doc(db, "tracker", "submissions");
+        const docSnap = await getDoc(docRef);
+        let data = docSnap.exists() ? docSnap.data() : {};
+        if (!data[student]) data[student] = {};
+        data[student][course] = true;
+        await setDoc(docRef, data);
+
+        uploadMsg.textContent = "✅ Assignment uploaded successfully! Your submission status has been updated.";
+        uploadMsg.className = "msg msg-success";
+
+        // Reset form
+        document.getElementById("studentName").value = "";
+        document.getElementById("rollNumber").value = "";
+        document.getElementById("email").value = "";
+        document.getElementById("courseName").value = "";
+        document.getElementById("assignmentTitle").value = "";
+        document.getElementById("notes").value = "";
+        document.getElementById("fileName").textContent = "";
+        document.getElementById("progressBar").style.display = "none";
+        document.getElementById("progressFill").style.width = "0%";
+        fileData = null;
+
+      } catch (err) {
+        uploadMsg.textContent = "❌ Upload failed. Please try again.";
+        uploadMsg.className = "msg msg-error";
+        console.error(err);
+      }
+    }
+
+    window.logoutUser = function() {
+      signOut(auth).then(() => window.location.href = "login.html");
+    }
+  </script>
+
+</body>
+</html>
