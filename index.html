@@ -1,131 +1,79 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>My Class ePortal</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    .hero {
-      background: linear-gradient(135deg, #1a73e8, #0d47a1);
-      color: white;
-      text-align: center;
-      padding: 60px 20px;
-    }
-    .hero h2 { font-size: 2rem; margin-bottom: 12px; }
-    .hero p { font-size: 1.1rem; opacity: 0.9; margin-bottom: 30px; }
-    .hero-btns a {
-      display: inline-block;
-      margin: 8px;
-      padding: 12px 28px;
-      border-radius: 25px;
-      font-weight: bold;
-      text-decoration: none;
-      font-size: 1rem;
-    }
-    .btn-white { background: white; color: #1a73e8; }
-    .btn-outline { border: 2px solid white; color: white; }
-    .btn-outline:hover { background: white; color: #1a73e8; }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
-    .grid-card {
-      background: white;
-      border-radius: 12px;
-      padding: 28px 20px;
-      text-align: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-      text-decoration: none;
-      color: #333;
-      transition: 0.3s;
-    }
-    .grid-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-    }
-    .grid-card .icon { font-size: 2.5rem; margin-bottom: 12px; }
-    .grid-card h3 { color: #1a73e8; margin-bottom: 8px; }
-    .grid-card p { font-size: 0.9rem; color: #666; }
-    .announce {
-      max-width: 900px;
-      margin: 0 auto 40px;
-      padding: 0 20px;
-    }
-    .announce .card ul {
-      padding-left: 20px;
-      line-height: 2.2;
-      color: #444;
-    }
-  </style>
 </head>
 <body>
 
   <header>
-    <h1>📚 My Class ePortal</h1>
-    <p>Your digital classroom</p>
+    <a href="index.html" class="header-brand">
+      <div class="logo-icon">📚</div>
+      <span>Class<em>Portal</em></span>
+    </a>
     <nav>
+      <a href="index.html" class="active">Home</a>
+      <a href="submit.html">Submit</a>
+      <a href="dashboard.html">Dashboard</a>
       <a href="login.html">Login</a>
-      <a href="signup.html">Sign Up</a>
-      <a href="submit.html">Submit Assignment</a>
+      <a href="signup.html" class="btn-nav">Sign Up</a>
     </nav>
   </header>
 
   <div class="hero">
-    <h2>Welcome to My Class ePortal 👋</h2>
-    <p>A secure platform for submitting and managing class assignments</p>
-    <div class="hero-btns">
-      <a href="signup.html" class="btn-white">Create Account</a>
-      <a href="login.html" class="btn-outline">Login</a>
+    <div class="hero-badge">🎓 Academic Year 2025</div>
+    <h1 class="fade-up">Your Digital <span>Classroom</span><br/>Starts Here</h1>
+    <p class="fade-up-2">Submit assignments, track your progress, and stay connected with your class — all in one secure platform.</p>
+    <div class="hero-btns fade-up-3">
+      <a href="signup.html" class="btn btn-primary">Get Started</a>
+      <a href="login.html" class="btn btn-secondary">Login to Portal</a>
     </div>
   </div>
 
   <div class="grid">
-    <a href="signup.html" class="grid-card">
+    <a href="signup.html" class="grid-card fade-up">
       <div class="icon">📝</div>
       <h3>Sign Up</h3>
-      <p>Create your student account to get started</p>
+      <p>Create your student account and join your class portal</p>
     </a>
-    <a href="login.html" class="grid-card">
+    <a href="login.html" class="grid-card fade-up-2">
       <div class="icon">🔐</div>
       <h3>Login</h3>
-      <p>Access your dashboard and submit assignments</p>
+      <p>Access your personal dashboard securely</p>
     </a>
-    <a href="submit.html" class="grid-card">
+    <a href="submit.html" class="grid-card fade-up-3">
       <div class="icon">📤</div>
       <h3>Submit Assignment</h3>
-      <p>Upload and submit your assignments securely</p>
+      <p>Upload and submit your work before the deadline</p>
     </a>
-    <a href="dashboard.html" class="grid-card">
+    <a href="dashboard.html" class="grid-card fade-up-4">
       <div class="icon">📊</div>
       <h3>My Dashboard</h3>
-      <p>View your submissions and announcements</p>
+      <p>View announcements and your submission history</p>
     </a>
   </div>
 
-  <div class="announce">
+  <div class="announce-section">
     <div class="card">
       <h2>📢 Latest Announcements</h2>
       <ul>
         <li>📌 Assignment 1 is due this Friday at 11:59 PM</li>
-        <li>📌 Upload your file in PDF or DOCX format only</li>
+        <li>📌 Upload files in PDF or DOCX format only</li>
         <li>📌 Contact your teacher if you face any login issues</li>
+        <li>📌 New assignments will be posted every Monday</li>
       </ul>
     </div>
   </div>
 
   <footer>
-    <p>© 2025 My Class ePortal — All Rights Reserved</p>
+    <p>© 2025 <span>ClassPortal</span> — Built for Students, Managed by Teachers</p>
   </footer>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
     const firebaseConfig = {
       apiKey: "AIzaSyD2gg4JLsd-Q0vPRYuukZ3oujb6RiR53NE",
       authDomain: "my-e-portal.firebaseapp.com",
@@ -134,10 +82,8 @@
       messagingSenderId: "628881859766",
       appId: "1:628881859766:web:e45df5cb372d58960c7217"
     };
-
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-
     onAuthStateChanged(auth, (user) => {
       if (user) {
         if (user.email === "admin@eportal.com") {

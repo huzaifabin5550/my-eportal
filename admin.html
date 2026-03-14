@@ -1,93 +1,186 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin — My Class ePortal</title>
+  <title>Admin — ClassPortal</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th {
-      background: #1a73e8;
+    .admin-banner {
+      background: linear-gradient(135deg, #1e293b, #1a3a5c);
       color: white;
-      padding: 12px;
-      text-align: left;
+      padding: 36px 40px;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
     }
-    td {
-      padding: 12px;
-      border-bottom: 1px solid #eee;
-    }
-    tr:hover { background: #f5f5f5; }
-    .logout-btn {
-      background: white;
-      color: #1a73e8;
-      border: 2px solid white;
-      padding: 6px 16px;
+    .admin-banner .badge {
+      display: inline-block;
+      background: rgba(245,158,11,0.2);
+      border: 1px solid rgba(245,158,11,0.4);
+      color: var(--gold);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 12px;
       border-radius: 20px;
-      cursor: pointer;
-      font-weight: bold;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
     }
-    .logout-btn:hover {
-      background: #1a73e8;
-      color: white;
+    .admin-banner h2 {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .admin-banner h2 span { color: var(--gold); }
+    .admin-banner p { color: #94a3b8; font-size: 0.9rem; }
+    .admin-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+    .admin-stat {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+      color: var(--text);
+      transition: all 0.25s;
+    }
+    .admin-stat:hover {
+      border-color: var(--blue);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+    .admin-stat .s-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(245,158,11,0.12));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .admin-stat .s-text strong {
+      display: block;
+      font-family: 'Sora', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 3px;
+    }
+    .admin-stat .s-text span {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .sheets-wrapper {
+      background: white;
+      border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+    .sheets-wrapper h2 {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sheets-wrapper p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    iframe {
+      border-radius: 10px;
+      display: block;
     }
   </style>
 </head>
 <body>
+
   <header>
-    <h1>📚 My Class ePortal</h1>
-    <p>Admin Dashboard</p>
+    <a href="index.html" class="header-brand">
+      <div class="logo-icon">📚</div>
+      <span>Class<em>Portal</em></span>
+    </a>
     <nav>
-      <button class="logout-btn" onclick="logoutUser()">Logout</button>
+      <a href="index.html">Home</a>
+      <a href="admin.html" class="active">Admin</a>
+      <button class="nav-logout" onclick="logoutUser()">Logout</button>
     </nav>
   </header>
 
   <main>
-    <div class="card">
-      <h2>👥 Registered Students</h2>
-      <p>Manage your students from the 
-        <a href="https://console.firebase.google.com/project/my-e-portal/authentication/users" 
-           target="_blank">Firebase Console → Authentication → Users</a>
-      </p>
+    <div class="admin-banner fade-up">
+      <div>
+        <div class="badge">⚙️ Admin Panel</div>
+        <h2>Admin <span>Dashboard</span></h2>
+        <p>Manage students, view submissions, and control your portal</p>
+      </div>
     </div>
 
-    <div class="card">
-      <h2>📥 Assignment Submissions</h2>
-      <p>View and manage all submissions from your 
-        <a href="https://docs.google.com/spreadsheets" target="_blank">
-          Google Sheets Dashboard
-        </a>
-      </p>
-      <iframe 
-  src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSsBOK2AKrZP12f53HhPqGQHK85VbdjW_bSWFqlI8NkPMlscLyG5Di3NcHJqYwcxeo1lQ0QLmtF1j2G/pubhtml"
-  width="100%"
-  height="500px"
-  frameborder="0">
-</iframe>
-```
+    <div class="admin-stats fade-up-2">
+      <a href="https://console.firebase.google.com/project/my-e-portal/authentication/users"
+         target="_blank" class="admin-stat">
+        <div class="s-icon">👥</div>
+        <div class="s-text">
+          <strong>Registered Students</strong>
+          <span>View in Firebase Console</span>
+        </div>
+      </a>
+      <a href="https://docs.google.com/spreadsheets" target="_blank" class="admin-stat">
+        <div class="s-icon">📊</div>
+        <div class="s-text">
+          <strong>Google Sheets</strong>
+          <span>Open full submissions</span>
+        </div>
+      </a>
+      <a href="submit.html" class="admin-stat">
+        <div class="s-icon">📤</div>
+        <div class="s-text">
+          <strong>Submit Form</strong>
+          <span>View student form</span>
+        </div>
+      </a>
+    </div>
 
-    
-
-Then push to GitHub:
-```
-git add .
-git commit -m "added sheets to admin panel"
-git push
+    <div class="sheets-wrapper fade-up-3">
+      <h2>📥 Live Assignment Submissions</h2>
+      <p>All student submissions appear below in real time from Google Sheets.</p>
+      <iframe
+        src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSsBOK2AKrZP12f53HhPqGQHK85VbdjW_bSWFqlI8NkPMlscLyG5Di3NcHJqYwcxeo1lQ0QLmtF1j2G/pubhtml"
+        width="100%"
+        height="550px"
+        frameborder="0">
+      </iframe>
     </div>
   </main>
 
   <footer>
-    <p>© 2025 My Class ePortal — All Rights Reserved</p>
+    <p>© 2025 <span>ClassPortal</span> — Built for Students, Managed by Teachers</p>
   </footer>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
     const firebaseConfig = {
       apiKey: "AIzaSyD2gg4JLsd-Q0vPRYuukZ3oujb6RiR53NE",
       authDomain: "my-e-portal.firebaseapp.com",
@@ -96,7 +189,6 @@ git push
       messagingSenderId: "628881859766",
       appId: "1:628881859766:web:e45df5cb372d58960c7217"
     };
-
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
@@ -110,5 +202,7 @@ git push
       signOut(auth).then(() => window.location.href = "login.html");
     }
   </script>
+
 </body>
 </html>
+ 
