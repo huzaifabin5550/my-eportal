@@ -44,6 +44,7 @@
     .ac-gold { background: rgba(245,158,11,0.12); }
     .ac-green { background: rgba(22,163,74,0.12); }
     .ac-red { background: rgba(239,68,68,0.12); }
+    .ac-purple { background: rgba(139,92,246,0.12); }
     .admin-card strong {
       display: block;
       font-family: 'Sora', sans-serif;
@@ -141,12 +142,12 @@
     <nav>
       <a href="index.html">Home</a>
       <a href="admin.html" class="active">Admin</a>
-      <a href="submit.html">Submit Form</a>
+      <a href="tracker.html">Tracker</a>
       <button class="nav-logout" onclick="logoutUser()">Logout</button>
     </nav>
   </header>
 
-  <!-- ACCESS DENIED (shown if not admin) -->
+  <!-- ACCESS DENIED -->
   <div class="access-denied" id="accessDenied" style="display:none;">
     <div class="icon">🚫</div>
     <h2>Access Denied</h2>
@@ -154,7 +155,7 @@
     <a href="index.html" class="btn btn-primary">Go to Homepage</a>
   </div>
 
-  <!-- ADMIN CONTENT (hidden until verified) -->
+  <!-- ADMIN CONTENT -->
   <main id="adminContent" style="display:none;">
 
     <div class="admin-banner fade-up">
@@ -190,8 +191,15 @@
         <a href="submit.html" class="admin-card">
           <div class="ac-icon ac-gold">📤</div>
           <div>
-            <strong>Submission Form</strong>
+            <strong>Submit Form</strong>
             <small>Preview student form</small>
+          </div>
+        </a>
+        <a href="tracker.html" class="admin-card">
+          <div class="ac-icon ac-purple">📋</div>
+          <div>
+            <strong>Assignment Tracker</strong>
+            <small>Update submission status</small>
           </div>
         </a>
         <a href="https://console.firebase.google.com" target="_blank" class="admin-card">
@@ -239,13 +247,10 @@
 
     onAuthStateChanged(auth, (user) => {
       if (!user) {
-        // Not logged in → redirect to login
         window.location.href = "login.html";
       } else if (user.email !== "admin@eportal.com") {
-        // Logged in but NOT admin → show access denied
         document.getElementById("accessDenied").style.display = "flex";
       } else {
-        // Admin verified ✅ → show content
         document.getElementById("adminContent").style.display = "flex";
         document.getElementById("adminContent").style.flexDirection = "column";
       }
@@ -258,4 +263,3 @@
 
 </body>
 </html>
- 
