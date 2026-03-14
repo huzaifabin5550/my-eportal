@@ -154,7 +154,9 @@
       }
     }
 
-    selectRole("admin");
+   const urlParams = new URLSearchParams(window.location.search);
+const role = urlParams.get("role") || "admin";
+selectRole(role);
 
     window.loginUser = function() {
       const email = document.getElementById("email").value;

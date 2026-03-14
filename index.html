@@ -17,7 +17,25 @@
       <a href="index.html" class="active">Home</a>
       <a href="submit.html">Submit</a>
       <a href="dashboard.html">Dashboard</a>
-      <a href="login.html">Login</a>
+      <div class="dropdown">
+        <a href="#" class="dropdown-toggle">Login ▾</a>
+        <div class="dropdown-menu">
+          <a href="login.html?role=admin">
+            <span>🛡️</span>
+            <div>
+              <strong>Login as Admin</strong>
+              <small>Teacher / Manager</small>
+            </div>
+          </a>
+          <a href="login.html?role=student">
+            <span>🎓</span>
+            <div>
+              <strong>Login as Student</strong>
+              <small>Class member</small>
+            </div>
+          </a>
+        </div>
+      </div>
       <a href="signup.html" class="btn-nav">Sign Up</a>
     </nav>
   </header>
