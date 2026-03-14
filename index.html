@@ -71,29 +71,5 @@
     <p>© 2025 <span>ClassPortal</span> — Built for Students, Managed by Teachers</p>
   </footer>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    const firebaseConfig = {
-      apiKey: "AIzaSyD2gg4JLsd-Q0vPRYuukZ3oujb6RiR53NE",
-      authDomain: "my-e-portal.firebaseapp.com",
-      projectId: "my-e-portal",
-      storageBucket: "my-e-portal.firebasestorage.app",
-      messagingSenderId: "628881859766",
-      appId: "1:628881859766:web:e45df5cb372d58960c7217"
-    };
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        if (user.email === "admin@eportal.com") {
-          window.location.href = "admin.html";
-        } else {
-          window.location.href = "dashboard.html";
-        }
-      }
-    });
-  </script>
-
 </body>
 </html>
