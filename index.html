@@ -1,42 +1,154 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>My Class ePortal</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .hero {
+      background: linear-gradient(135deg, #1a73e8, #0d47a1);
+      color: white;
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .hero h2 { font-size: 2rem; margin-bottom: 12px; }
+    .hero p { font-size: 1.1rem; opacity: 0.9; margin-bottom: 30px; }
+    .hero-btns a {
+      display: inline-block;
+      margin: 8px;
+      padding: 12px 28px;
+      border-radius: 25px;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 1rem;
+    }
+    .btn-white { background: white; color: #1a73e8; }
+    .btn-outline { border: 2px solid white; color: white; }
+    .btn-outline:hover { background: white; color: #1a73e8; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .grid-card {
+      background: white;
+      border-radius: 12px;
+      padding: 28px 20px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      text-decoration: none;
+      color: #333;
+      transition: 0.3s;
+    }
+    .grid-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    }
+    .grid-card .icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .grid-card h3 { color: #1a73e8; margin-bottom: 8px; }
+    .grid-card p { font-size: 0.9rem; color: #666; }
+    .announce {
+      max-width: 900px;
+      margin: 0 auto 40px;
+      padding: 0 20px;
+    }
+    .announce .card ul {
+      padding-left: 20px;
+      line-height: 2.2;
+      color: #444;
+    }
+  </style>
 </head>
 <body>
 
   <header>
     <h1>📚 My Class ePortal</h1>
-    <p>Welcome — submit your assignments below</p>
+    <p>Your digital classroom — submit, track, and manage assignments</p>
     <nav>
-      <a href="index.html">Home</a>
+      <a href="login.html">Login</a>
+      <a href="signup.html">Sign Up</a>
       <a href="submit.html">Submit Assignment</a>
     </nav>
   </header>
 
-  <main>
-    <div class="card">
-      <h2>📢 Announcements</h2>
-      <p>Assignment 1 is due this Friday. Submit before 11:59 PM.</p>
+  <div class="hero">
+    <h2>Welcome to My Class ePortal 👋</h2>
+    <p>A secure platform for submitting and managing class assignments</p>
+    <div class="hero-btns">
+      <a href="signup.html" class="btn-white">Create Account</a>
+      <a href="login.html" class="btn-outline">Login</a>
     </div>
+  </div>
 
+  <div class="grid">
+    <a href="signup.html" class="grid-card">
+      <div class="icon">📝</div>
+      <h3>Sign Up</h3>
+      <p>Create your student account to get started</p>
+    </a>
+    <a href="login.html" class="grid-card">
+      <div class="icon">🔐</div>
+      <h3>Login</h3>
+      <p>Access your dashboard and submit assignments</p>
+    </a>
+    <a href="submit.html" class="grid-card">
+      <div class="icon">📤</div>
+      <h3>Submit Assignment</h3>
+      <p>Upload and submit your assignments securely</p>
+    </a>
+    <a href="dashboard.html" class="grid-card">
+      <div class="icon">📊</div>
+      <h3>My Dashboard</h3>
+      <p>View your submissions and announcements</p>
+    </a>
+  </div>
+
+  <div class="announce">
     <div class="card">
-      <h2>📁 How to Submit</h2>
-      <ol>
-        <li>Click <strong>"Submit Assignment"</strong> in the menu above</li>
-        <li>Fill in your name and roll number</li>
-        <li>Upload your file</li>
-        <li>Click Submit — done!</li>
-      </ol>
+      <h2>📢 Latest Announcements</h2>
+      <ul>
+        <li>📌 Assignment 1 is due this Friday at 11:59 PM</li>
+        <li>📌 Make sure to upload your file in PDF or DOCX format</li>
+        <li>📌 Contact your teacher if you face any issues logging in</li>
+      </ul>
     </div>
-  </main>
+  </div>
 
   <footer>
     <p>© 2025 My Class ePortal — All Rights Reserved</p>
   </footer>
 
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD2gg4JLsd-Q0vPRYuukZ3oujb6RiR53NE",
+      authDomain: "my-e-portal.firebaseapp.com",
+      projectId: "my-e-portal",
+      storageBucket: "my-e-portal.firebasestorage.app",
+      messagingSenderId: "628881859766",
+      appId: "1:628881859766:web:e45df5cb372d58960c7217"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        if (user.email === "admin@eportal.com") {
+          window.location.href = "admin.html";
+        } else {
+          window.location.href = "dashboard.html";
+        }
+      }
+    });
+  </script>
+
 </body>
 </html>
+ 
