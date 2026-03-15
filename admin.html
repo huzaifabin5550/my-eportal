@@ -196,6 +196,12 @@
     }
 
     window.logoutUser = function() {
+      localStorage.removeItem("cp_uid");
+      localStorage.removeItem("cp_email");
+      localStorage.removeItem("cp_role");
+      sessionStorage.removeItem("cp_uid");
+      sessionStorage.removeItem("cp_email");
+      sessionStorage.removeItem("cp_role");
       signOut(auth).then(() => window.location.href = "login.html");
     }
   </script>
