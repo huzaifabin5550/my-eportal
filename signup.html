@@ -8,21 +8,20 @@
 </head>
 <body>
 
-  <header>
-    <a href="index.html" class="header-brand">
-      <div class="logo-icon"><img src="https://i.postimg.cc/mg0ZNYHh/Whisk-ddc266604d642ee810d42746806c01f1dr-removebg-preview.png" alt="ClassPortal Logo" /></div>
-      <span style="display:none;">ClassPortal</span>
+  <header class="public-header">
+    <a href="index.html" class="brand">
+      <img src="https://i.postimg.cc/mg0ZNYHh/Whisk-ddc266604d642ee810d42746806c01f1dr-removebg-preview.png" alt="Logo" class="brand-logo" />
     </a>
-    <nav>
+    <nav class="public-nav">
       <a href="index.html">Home</a>
       <a href="login.html">Login</a>
-      <a href="signup.html" class="active btn-nav">Sign Up</a>
+      <a href="signup.html" class="active btn btn-primary btn-sm">Sign Up</a>
     </nav>
   </header>
 
-  <div class="auth-screen">
-    <div class="auth-box fade-up">
-      <div class="auth-icon-wrap">📝</div>
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-icon">📝</div>
       <h2>Create Account</h2>
       <p class="auth-sub">Join ClassPortal as a student</p>
 
@@ -44,7 +43,10 @@
 
       <div class="form-group">
         <label>Password * (min 6 characters)</label>
-        <input type="password" id="password" placeholder="Create a strong password" />
+        <div class="pw-wrap">
+          <input type="password" id="password" placeholder="Create a strong password" />
+          <button class="pw-toggle" onclick="togglePw()" id="pwBtn">👁️</button>
+        </div>
       </div>
 
       <button class="btn btn-primary btn-full" onclick="signupUser()">
@@ -59,10 +61,6 @@
       </div>
     </div>
   </div>
-
-  <footer>
-    <p>© 2025 <span>ClassPortal</span> — Assignment Submission System</p>
-  </footer>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -81,6 +79,13 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    let showPw = false;
+
+    window.togglePw = function() {
+      showPw = !showPw;
+      document.getElementById("password").type = showPw ? "text" : "password";
+      document.getElementById("pwBtn").textContent = showPw ? "🙈" : "👁️";
+    }
 
     window.signupUser = async function() {
       const name = document.getElementById("fullName").value.trim();
@@ -102,7 +107,6 @@
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(userCredential.user, { displayName: name });
-
         await setDoc(doc(db, "users", userCredential.user.uid), {
           fullName: name,
           rollNumber: roll,
@@ -111,17 +115,14 @@
           createdAt: new Date().toISOString()
         });
 
-        successMsg.textContent = "✅ Account created successfully! Redirecting to login...";
+        successMsg.textContent = "✅ Account created! Redirecting to login...";
         successMsg.style.display = "block";
         setTimeout(() => window.location.href = "login.html", 2000);
-
       } catch (error) {
         if (error.code === "auth/email-already-in-use") {
           errorMsg.textContent = "❌ This email is already registered.";
         } else if (error.code === "auth/weak-password") {
           errorMsg.textContent = "❌ Password must be at least 6 characters.";
-        } else if (error.code === "auth/invalid-email") {
-          errorMsg.textContent = "❌ Please enter a valid email address.";
         } else {
           errorMsg.textContent = "❌ Signup failed. Please try again.";
         }
@@ -129,9 +130,7 @@
       }
     }
 
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") signupUser();
-    });
+    document.addEventListener("keydown", (e) => { if (e.key === "Enter") signupUser(); });
   </script>
 
 </body>

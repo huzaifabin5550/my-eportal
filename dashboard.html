@@ -8,81 +8,118 @@
 </head>
 <body>
 
-  <header>
-    <a href="index.html" class="header-brand">
-      <div class="logo-icon"><img src="https://i.postimg.cc/mg0ZNYHh/Whisk-ddc266604d642ee810d42746806c01f1dr-removebg-preview.png" alt="ClassPortal Logo" /></div>
-      <span style="display:none;">ClassPortal</span>
-    </a>
-    <nav>
-      <a href="dashboard.html" class="active">Dashboard</a>
-      <a href="upload.html">Upload</a>
-      <a href="status.html">My Status</a>
-      <button class="nav-logout" onclick="logoutUser()">Logout</button>
-    </nav>
-  </header>
+  <div class="app-layout">
 
-  <div class="page-wrapper">
-
-    <div class="welcome-card fade-up">
-      <div>
-        <h2>Welcome back, <span id="studentName">Student</span> 👋</h2>
-        <p>Here is your ClassPortal overview for today</p>
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <img src="https://i.postimg.cc/mg0ZNYHh/Whisk-ddc266604d642ee810d42746806c01f1dr-removebg-preview.png" alt="Logo" class="sidebar-logo" />
       </div>
-      <a href="upload.html" class="btn btn-gold">+ Upload Assignment</a>
-    </div>
-
-    <div class="stats-row fade-up-2">
-      <a href="upload.html" class="stat-card">
-        <div class="stat-icon si-blue">📤</div>
-        <div>
-          <strong>Upload</strong>
-          <small>Submit assignment</small>
-        </div>
-      </a>
-      <a href="status.html" class="stat-card">
-        <div class="stat-icon si-green">📊</div>
-        <div>
-          <strong>My Status</strong>
-          <small>Track submissions</small>
-        </div>
-      </a>
-      <a href="status.html" class="stat-card">
-        <div class="stat-icon si-gold">📋</div>
-        <div>
-          <strong>All Subjects</strong>
-          <small>View all courses</small>
-        </div>
-      </a>
-    </div>
-
-    <div class="card fade-up-3">
-      <div class="card-title">
-        📂 My Uploaded Assignments
-        <span class="ct-badge" id="assignCount">0</span>
-      </div>
-      <div id="assignmentsList">
-        <div class="empty-state">
-          <div class="es-icon">⏳</div>
-          <p>Loading your assignments...</p>
+      <div class="sidebar-user">
+        <div class="user-avatar" id="userAvatar">S</div>
+        <div class="user-info">
+          <strong id="sidebarName">Student</strong>
+          <small>Student Account</small>
         </div>
       </div>
-    </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Main Menu</div>
+        <a href="dashboard.html" class="nav-item active">
+          <span class="nav-icon">🏠</span> Dashboard
+        </a>
+        <a href="upload.html" class="nav-item">
+          <span class="nav-icon">📤</span> Upload Assignment
+        </a>
+        <a href="status.html" class="nav-item">
+          <span class="nav-icon">📊</span> My Status
+        </a>
+        <div class="nav-section-label">Account</div>
+        <a href="index.html" class="nav-item">
+          <span class="nav-icon">🏡</span> Home
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="sidebar-logout" onclick="logoutUser()">
+          <span class="nav-icon">🚪</span> Logout
+        </button>
+      </div>
+    </aside>
 
-    <div class="card fade-up-4">
-      <div class="card-title">📢 Announcements</div>
-      <ul class="announce-list">
-        <li>📌 All assignments must be submitted before the deadline</li>
-        <li>📌 Accepted formats: PDF, DOCX, PPTX, ZIP (max 50MB)</li>
-        <li>📌 Login with your registered email to upload assignments</li>
-        <li>📌 Contact your teacher if you face any issues</li>
-      </ul>
-    </div>
+    <div class="main-content">
+      <div class="top-bar">
+        <div class="top-bar-left">
+          <h1>Student Dashboard</h1>
+          <p>Welcome back to ClassPortal</p>
+        </div>
+        <div class="top-bar-right">
+          <span class="top-bar-name" id="topBarName">Student</span>
+          <div class="top-bar-avatar" id="topBarAvatar">S</div>
+        </div>
+      </div>
 
+      <div class="page-content">
+
+        <div class="welcome-banner fade-up">
+          <div class="welcome-text">
+            <h2>Welcome back, <span id="studentName">Student</span> 👋</h2>
+            <p>Here is your ClassPortal overview for today</p>
+          </div>
+          <a href="upload.html" class="btn btn-gold">+ Upload Assignment</a>
+        </div>
+
+        <div class="stats-grid fade-up-2">
+          <a href="upload.html" class="stat-card">
+            <div class="stat-icon-wrap si-indigo">📤</div>
+            <div class="stat-info">
+              <strong>Upload</strong>
+              <small>Submit assignment</small>
+            </div>
+          </a>
+          <a href="status.html" class="stat-card">
+            <div class="stat-icon-wrap si-emerald">📊</div>
+            <div class="stat-info">
+              <strong>My Status</strong>
+              <small>Track submissions</small>
+            </div>
+          </a>
+          <a href="status.html" class="stat-card">
+            <div class="stat-icon-wrap si-amber">📋</div>
+            <div class="stat-info">
+              <strong>All Subjects</strong>
+              <small>View all courses</small>
+            </div>
+          </a>
+        </div>
+
+        <div class="card fade-up-3">
+          <div class="card-header">
+            <div class="card-title">
+              📂 My Uploaded Assignments
+            </div>
+            <span class="card-badge" id="assignCount">0</span>
+          </div>
+          <div id="assignmentsList">
+            <div class="empty-state">
+              <span class="es-icon">⏳</span>
+              <p>Loading your assignments...</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card fade-up-4">
+          <div class="card-header">
+            <div class="card-title">📢 Announcements</div>
+          </div>
+          <ul class="announce-list">
+            <li>📌 All assignments must be submitted before the deadline</li>
+            <li>📌 Accepted formats: PDF, DOCX, PPTX, ZIP (max 50MB)</li>
+            <li>📌 Login with your registered email to upload assignments</li>
+            <li>📌 Contact your teacher if you face any issues</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
   </div>
-
-  <footer>
-    <p>© 2025 <span>ClassPortal</span> — Assignment Submission System</p>
-  </footer>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -115,66 +152,50 @@
     let myAssignments = [];
 
     onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        window.location.href = "login.html";
-        return;
-      }
-      if (user.email === ADMIN_EMAIL) {
-        window.location.href = "admin.html";
-        return;
-      }
-      document.getElementById("studentName").textContent =
-        user.displayName || user.email.split("@")[0];
+      if (!user) { window.location.href = "login.html"; return; }
+      if (user.email === ADMIN_EMAIL) { window.location.href = "admin.html"; return; }
+      const name = user.displayName || user.email.split("@")[0];
+      document.getElementById("studentName").textContent = name;
+      document.getElementById("sidebarName").textContent = name;
+      document.getElementById("topBarName").textContent = name;
+      const initial = name.charAt(0).toUpperCase();
+      document.getElementById("userAvatar").textContent = initial;
+      document.getElementById("topBarAvatar").textContent = initial;
       await loadMyAssignments(user.uid);
     });
 
     async function loadMyAssignments(uid) {
       try {
-        const q = query(
-          collection(db, "assignments"),
-          where("userId", "==", uid),
-          orderBy("uploadedAt", "desc")
-        );
+        const q = query(collection(db, "assignments"), where("userId", "==", uid), orderBy("uploadedAt", "desc"));
         const snapshot = await getDocs(q);
         myAssignments = [];
         snapshot.forEach(d => myAssignments.push({ id: d.id, ...d.data() }));
         renderAssignments();
-      } catch (err) {
-        console.error(err);
-        renderAssignments();
-      }
+      } catch (err) { console.error(err); renderAssignments(); }
     }
 
     function renderAssignments() {
       const container = document.getElementById("assignmentsList");
       document.getElementById("assignCount").textContent = myAssignments.length;
-
       if (myAssignments.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="es-icon">📭</div>
-            <p>You haven't uploaded any assignments yet. <a href="upload.html" style="color:var(--blue)">Upload now →</a></p>
-          </div>`;
+        container.innerHTML = `<div class="empty-state"><span class="es-icon">📭</span><p>No assignments yet. <a href="upload.html">Upload now →</a></p></div>`;
         return;
       }
-
       container.innerHTML = myAssignments.map(a => `
-        <div class="assign-row">
-          <div class="ar-info">
+        <div class="assign-item">
+          <div class="ai-info">
             <strong>${a.assignmentTitle || "Untitled"}</strong>
-            <div class="ar-meta">
+            <div class="ai-meta">
               <span>📚 ${courseNames[a.course] || a.course}</span>
               <span>📎 ${a.fileName}</span>
               <span>🕒 ${a.uploadedAt ? new Date(a.uploadedAt.seconds * 1000).toLocaleDateString() : "Just now"}</span>
             </div>
           </div>
-          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
             <span class="badge badge-success">✅ Submitted</span>
-            <button class="btn-dl" onclick="downloadFile('${a.id}')">⬇️ Download</button>
+            <button class="btn btn-success btn-sm" onclick="downloadFile('${a.id}')">⬇️ Download</button>
           </div>
-        </div>
-      `).join("");
-
+        </div>`).join("");
       window._assignments = myAssignments;
     }
 
@@ -188,10 +209,7 @@
     }
 
     window.logoutUser = function() {
-      ["cp_uid","cp_email","cp_role","cp_name"].forEach(k => {
-        localStorage.removeItem(k);
-        sessionStorage.removeItem(k);
-      });
+      ["cp_uid","cp_email","cp_role","cp_name"].forEach(k => { localStorage.removeItem(k); sessionStorage.removeItem(k); });
       signOut(auth).then(() => window.location.href = "login.html");
     }
   </script>

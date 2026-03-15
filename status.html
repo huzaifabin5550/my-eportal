@@ -5,121 +5,87 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>My Status — ClassPortal</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    .subject-row {
-      background: white;
-      border-radius: var(--radius-sm);
-      padding: 18px 22px;
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-      transition: var(--transition);
-      margin-bottom: 10px;
-    }
-    .subject-row:hover {
-      border-color: rgba(37,99,235,0.2);
-      box-shadow: var(--shadow-sm);
-    }
-    .sub-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .sub-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: linear-gradient(135deg,
-        rgba(37,99,235,0.1), rgba(245,158,11,0.08));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-      flex-shrink: 0;
-    }
-    .sub-info strong {
-      display: block;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--navy-2);
-    }
-    .confirm-banner {
-      background: linear-gradient(135deg, #064e3b, #065f46);
-      border-radius: var(--radius);
-      padding: 28px 32px;
-      color: white;
-      text-align: center;
-    }
-    .confirm-banner .cb-icon { font-size: 3rem; margin-bottom: 12px; }
-    .confirm-banner h3 {
-      font-family: 'Sora', sans-serif;
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .confirm-banner p { color: #6ee7b7; font-size: 0.875rem; }
-  </style>
 </head>
 <body>
 
-  <header>
-    <a href="index.html" class="header-brand">
-      <div class="logo-icon"><img src="https://i.postimg.cc/mg0ZNYHh/Whisk-ddc266604d642ee810d42746806c01f1dr-removebg-preview.png" alt="ClassPortal Logo" /></div>
-      
-    </a>
-    <nav>
-      <a href="dashboard.html">Dashboard</a>
-      <a href="upload.html">Upload</a>
-      <a href="status.html" class="active">My Status</a>
-      <button class="nav-logout" onclick="logoutUser()">Logout</button>
-    </nav>
-  </header>
+  <div class="app-layout">
 
-  <div class="page-wrapper-sm">
-
-    <div class="confirm-banner fade-up" id="confirmBanner" style="display:none;">
-      <div class="cb-icon">✅</div>
-      <h3>Assignment Uploaded Successfully!</h3>
-      <p>Your assignment has been submitted and recorded in the system.</p>
-    </div>
-
-    <div class="section-banner fade-up">
-      <div class="s-badge">📊 My Status</div>
-      <h2>My <span>Assignment Status</span></h2>
-      <p>Check which assignments have been submitted for each course.</p>
-    </div>
-
-    <div class="card fade-up-2">
-      <div class="card-title">📚 Course Submission Status</div>
-      <div id="statusList">
-        <div class="empty-state">
-          <div class="es-icon">⏳</div>
-          <p>Loading your status...</p>
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <img src="https://i.postimg.cc/mg0ZNYHh/Whisk-ddc266604d642ee810d42746806c01f1dr-removebg-preview.png" alt="Logo" class="sidebar-logo" />
+      </div>
+      <div class="sidebar-user">
+        <div class="user-avatar" id="userAvatar">S</div>
+        <div class="user-info">
+          <strong id="sidebarName">Student</strong>
+          <small>Student Account</small>
         </div>
       </div>
-    </div>
-
-    <div class="card fade-up-3">
-      <div class="card-title">
-        📂 My Uploaded Files
-        <span class="ct-badge" id="fileCount">0</span>
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Main Menu</div>
+        <a href="dashboard.html" class="nav-item">
+          <span class="nav-icon">🏠</span> Dashboard
+        </a>
+        <a href="upload.html" class="nav-item">
+          <span class="nav-icon">📤</span> Upload Assignment
+        </a>
+        <a href="status.html" class="nav-item active">
+          <span class="nav-icon">📊</span> My Status
+        </a>
+        <div class="nav-section-label">Account</div>
+        <a href="index.html" class="nav-item">
+          <span class="nav-icon">🏡</span> Home
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="sidebar-logout" onclick="logoutUser()">
+          <span class="nav-icon">🚪</span> Logout
+        </button>
       </div>
-      <div id="myFilesList">
-        <div class="empty-state">
-          <div class="es-icon">⏳</div>
-          <p>Loading your files...</p>
+    </aside>
+
+    <div class="main-content">
+      <div class="top-bar">
+        <div class="top-bar-left">
+          <h1>My Status</h1>
+          <p>Track your assignment submissions</p>
+        </div>
+        <div class="top-bar-right">
+          <span class="top-bar-name" id="topBarName">Student</span>
+          <div class="top-bar-avatar" id="topBarAvatar">S</div>
         </div>
       </div>
-    </div>
 
+      <div class="page-content">
+
+        <div class="confirm-banner fade-up" id="confirmBanner" style="display:none;">
+          <span class="cb-icon">✅</span>
+          <h3>Assignment Uploaded Successfully!</h3>
+          <p>Your assignment has been submitted and recorded in the system.</p>
+        </div>
+
+        <div class="card fade-up-2">
+          <div class="card-header">
+            <div class="card-title">📚 Course Submission Status</div>
+          </div>
+          <div id="statusList">
+            <div class="empty-state"><span class="es-icon">⏳</span><p>Loading your status...</p></div>
+          </div>
+        </div>
+
+        <div class="card fade-up-3">
+          <div class="card-header">
+            <div class="card-title">📂 My Uploaded Files</div>
+            <span class="card-badge" id="fileCount">0</span>
+          </div>
+          <div id="myFilesList">
+            <div class="empty-state"><span class="es-icon">⏳</span><p>Loading your files...</p></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
   </div>
-
-  <footer>
-    <p>© 2025 <span>ClassPortal</span> — Assignment Submission System</p>
-  </footer>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -151,114 +117,85 @@
 
     let myFiles = [];
 
-    // Show confirmation banner if redirected from upload
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get("uploaded") === "true") {
+    if (new URLSearchParams(window.location.search).get("uploaded") === "true") {
       document.getElementById("confirmBanner").style.display = "block";
     }
 
     onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        window.location.href = "login.html";
-        return;
-      }
-      if (user.email === ADMIN_EMAIL) {
-        window.location.href = "admin.html";
-        return;
-      }
-
+      if (!user) { window.location.href = "login.html"; return; }
+      if (user.email === ADMIN_EMAIL) { window.location.href = "admin.html"; return; }
+      const name = user.displayName || user.email.split("@")[0];
+      document.getElementById("sidebarName").textContent = name;
+      document.getElementById("topBarName").textContent = name;
+      const initial = name.charAt(0).toUpperCase();
+      document.getElementById("userAvatar").textContent = initial;
+      document.getElementById("topBarAvatar").textContent = initial;
       const userDoc = await getDoc(doc(db, "users", user.uid));
       const userData = userDoc.exists() ? userDoc.data() : {};
       const studentName = userData.fullName || user.displayName || user.email;
-
       await loadStatus(studentName);
       await loadMyFiles(user.uid);
     });
 
     async function loadStatus(studentName) {
       try {
-        const trackerRef = doc(db, "tracker", "submissions");
-        const trackerSnap = await getDoc(trackerRef);
-        const trackerData = trackerSnap.exists() ? trackerSnap.data() : {};
+        const snap = await getDoc(doc(db, "tracker", "submissions"));
+        const trackerData = snap.exists() ? snap.data() : {};
         const studentData = trackerData[studentName] || {};
-
-        const container = document.getElementById("statusList");
-        container.innerHTML = courses.map(c => {
+        document.getElementById("statusList").innerHTML = courses.map(c => {
           const submitted = studentData[c.key] || false;
-          return `
-            <div class="subject-row">
-              <div class="sub-info">
-                <div class="sub-icon">${c.icon}</div>
-                <strong>${c.label}</strong>
-              </div>
-              <span class="badge ${submitted ? 'badge-success' : 'badge-error'}">
-                ${submitted ? '✅ Submitted' : '❌ Not Submitted'}
-              </span>
-            </div>`;
+          return `<div class="subject-item">
+            <div class="si-left">
+              <div class="si-icon">${c.icon}</div>
+              <strong>${c.label}</strong>
+            </div>
+            <span class="badge ${submitted ? 'badge-success' : 'badge-error'}">
+              ${submitted ? '✅ Submitted' : '❌ Not Submitted'}
+            </span>
+          </div>`;
         }).join("");
-      } catch (err) {
-        console.error(err);
-      }
+      } catch (err) { console.error(err); }
     }
 
     async function loadMyFiles(uid) {
       try {
-        const q = query(
-          collection(db, "assignments"),
-          where("userId", "==", uid),
-          orderBy("uploadedAt", "desc")
-        );
+        const q = query(collection(db, "assignments"), where("userId", "==", uid), orderBy("uploadedAt", "desc"));
         const snapshot = await getDocs(q);
         myFiles = [];
         snapshot.forEach(d => myFiles.push({ id: d.id, ...d.data() }));
-
         document.getElementById("fileCount").textContent = myFiles.length;
         const container = document.getElementById("myFilesList");
-
         if (myFiles.length === 0) {
-          container.innerHTML = `
-            <div class="empty-state">
-              <div class="es-icon">📭</div>
-              <p>No files uploaded yet. <a href="upload.html" style="color:var(--blue)">Upload now →</a></p>
-            </div>`;
+          container.innerHTML = `<div class="empty-state"><span class="es-icon">📭</span><p>No files uploaded yet. <a href="upload.html">Upload now →</a></p></div>`;
           return;
         }
-
         container.innerHTML = myFiles.map(a => `
-          <div class="assign-row">
-            <div class="ar-info">
+          <div class="assign-item">
+            <div class="ai-info">
               <strong>${a.assignmentTitle}</strong>
-              <div class="ar-meta">
+              <div class="ai-meta">
                 <span>📎 ${a.fileName}</span>
                 <span>🕒 ${a.uploadedAt ? new Date(a.uploadedAt.seconds * 1000).toLocaleDateString() : "Just now"}</span>
               </div>
             </div>
             <div style="display:flex;gap:8px;align-items:center;">
               <span class="badge badge-success">✅ Submitted</span>
-              <button class="btn-dl" onclick="downloadFile('${a.id}')">⬇️ Download</button>
+              <button class="btn btn-success btn-sm" onclick="downloadFile('${a.id}')">⬇️ Download</button>
             </div>
           </div>`).join("");
-
         window._myFiles = myFiles;
-      } catch (err) {
-        console.error(err);
-      }
+      } catch (err) { console.error(err); }
     }
 
     window.downloadFile = function(id) {
       const a = window._myFiles?.find(x => x.id === id);
       if (!a?.fileData) return;
       const link = document.createElement("a");
-      link.href = a.fileData;
-      link.download = a.fileName;
-      link.click();
+      link.href = a.fileData; link.download = a.fileName; link.click();
     }
 
     window.logoutUser = function() {
-      ["cp_uid","cp_email","cp_role","cp_name"].forEach(k => {
-        localStorage.removeItem(k);
-        sessionStorage.removeItem(k);
-      });
+      ["cp_uid","cp_email","cp_role","cp_name"].forEach(k => { localStorage.removeItem(k); sessionStorage.removeItem(k); });
       signOut(auth).then(() => window.location.href = "login.html");
     }
   </script>

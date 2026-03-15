@@ -6,60 +6,12 @@
   <title>Tracker — ClassPortal</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    .tracker-wrap {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 36px 32px;
-      display: flex;
-      flex-direction: column;
-      gap: 22px;
-    }
-    .table-card {
-      background: white;
-      border-radius: var(--radius);
-      padding: 28px;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
-      overflow-x: auto;
-    }
-    table { min-width: 960px; }
-    .toggle-btn {
-      padding: 6px 14px;
-      border-radius: 20px;
-      border: none;
-      font-size: 0.78rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      font-family: 'Inter', sans-serif;
-      white-space: nowrap;
-    }
-    .toggle-submitted { background: var(--success-bg); color: var(--success); }
-    .toggle-submitted:hover { background: #bbf7d0; }
-    .toggle-not { background: var(--error-bg); color: var(--error); }
-    .toggle-not:hover { background: #fecaca; }
-    .save-msg {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      text-align: right;
-      margin-top: 10px;
-    }
+    .tracker-table-wrap { overflow-x: auto; }
+    table { min-width: 1000px; }
+    .save-note { font-size: 0.78rem; color: var(--text-muted); text-align: right; margin-top: 10px; }
   </style>
 </head>
 <body>
-
-  <header>
-    <a href="index.html" class="header-brand">
-     <div class="logo-icon"><img src="https://i.postimg.cc/mg0ZNYHh/Whisk-ddc266604d642ee810d42746806c01f1dr-removebg-preview.png" alt="ClassPortal Logo" /></div>
-      <span style="display:none;">ClassPortal</span>
-    </a>
-    <nav>
-      <a href="admin.html">Admin</a>
-      <a href="assignments.html">Assignments</a>
-      <a href="tracker.html" class="active">Tracker</a>
-      <button class="nav-logout" onclick="logoutUser()">Logout</button>
-    </nav>
-  </header>
 
   <div class="access-denied" id="accessDenied" style="display:none;">
     <div class="ad-icon">🚫</div>
@@ -69,45 +21,92 @@
   </div>
 
   <div id="trackerContent" style="display:none;">
-    <div class="tracker-wrap">
+    <div class="app-layout">
 
-      <div class="section-banner fade-up">
-        <div class="s-badge">📋 Admin Only</div>
-        <h2>Assignment <span>Submission Tracker</span></h2>
-        <p>Click any button to toggle submitted / not submitted. Changes save instantly.</p>
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <img src="https://i.postimg.cc/mg0ZNYHh/Whisk-ddc266604d642ee810d42746806c01f1dr-removebg-preview.png" alt="Logo" class="sidebar-logo" />
+        </div>
+        <div class="sidebar-user">
+          <div class="user-avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444);">A</div>
+          <div class="user-info">
+            <strong>Administrator</strong>
+            <small>Admin Account</small>
+          </div>
+        </div>
+        <nav class="sidebar-nav">
+          <div class="nav-section-label">Admin Menu</div>
+          <a href="admin.html" class="nav-item">
+            <span class="nav-icon">⚙️</span> Admin Panel
+          </a>
+          <a href="assignments.html" class="nav-item">
+            <span class="nav-icon">📥</span> All Assignments
+          </a>
+          <a href="tracker.html" class="nav-item active">
+            <span class="nav-icon">📋</span> Tracker
+          </a>
+          <div class="nav-section-label">External</div>
+          <a href="https://console.firebase.google.com/project/my-e-portal/authentication/users" target="_blank" class="nav-item">
+            <span class="nav-icon">👥</span> Manage Students
+          </a>
+          <a href="index.html" class="nav-item">
+            <span class="nav-icon">🏡</span> Home
+          </a>
+        </nav>
+        <div class="sidebar-footer">
+          <button class="sidebar-logout" onclick="logoutUser()">
+            <span class="nav-icon">🚪</span> Logout
+          </button>
+        </div>
+      </aside>
+
+      <div class="main-content">
+        <div class="top-bar">
+          <div class="top-bar-left">
+            <h1>Assignment Tracker</h1>
+            <p>Toggle submission status for each student and subject</p>
+          </div>
+          <div class="top-bar-right">
+            <span class="top-bar-name">Administrator</span>
+            <div class="top-bar-avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444);">A</div>
+          </div>
+        </div>
+
+        <div class="page-content">
+          <div class="section-banner fade-up">
+            <div class="s-badge">📋 Admin Only</div>
+            <h2>Class <span>Submission Overview</span></h2>
+            <p>Click any button to toggle submitted / not submitted. Changes save instantly to Firebase.</p>
+          </div>
+
+          <div class="card fade-up-2">
+            <div class="card-header">
+              <div class="card-title">👥 All Students</div>
+            </div>
+            <div class="tracker-table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Student Name</th>
+                    <th>EU GDPR</th>
+                    <th>Future Proofing</th>
+                    <th>Investigations</th>
+                    <th>Mobile & Data</th>
+                    <th>Network</th>
+                    <th>Threat & Risk</th>
+                  </tr>
+                </thead>
+                <tbody id="trackerBody">
+                  <tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:32px;">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="save-note" id="saveMsg"></p>
+          </div>
+        </div>
       </div>
-
-      <div class="table-card fade-up-2">
-        <div class="card-title" style="margin-bottom:20px;">👥 Class Overview</div>
-        <table>
-          <thead>
-            <tr>
-              <th>Student Name</th>
-              <th>EU GDPR</th>
-              <th>Future Proofing</th>
-              <th>Investigations</th>
-              <th>Mobile & Data</th>
-              <th>Network</th>
-              <th>Threat & Risk</th>
-            </tr>
-          </thead>
-          <tbody id="trackerBody">
-            <tr>
-              <td colspan="7" style="text-align:center;color:#94a3b8;padding:32px;">
-                Loading...
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="save-msg" id="saveMsg"></p>
-      </div>
-
     </div>
   </div>
-
-  <footer>
-    <p>© 2025 <span>ClassPortal</span> — Assignment Submission System</p>
-  </footer>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -128,25 +127,15 @@
     const db = getFirestore(app);
     const ADMIN_EMAIL = "admin@eportal.com";
 
-    const students = [
-      "Alishba","Irfan","Maaz Hussain","Talha","Abrar",
-      "Huzaifa","Naveed","Maaz Iqbal","Rayan","Aqib",
-      "Sufyan","Hannan","Babar","Ahmad","Hassan","Faizan"
-    ];
-
+    const students = ["Alishba","Irfan","Maaz Hussain","Talha","Abrar","Huzaifa","Naveed","Maaz Iqbal","Rayan","Aqib","Sufyan","Hannan","Babar","Ahmad","Hassan","Faizan"];
     const subjects = ["gdpr","future","investigations","mobile","network","threat"];
     let trackerData = {};
 
     onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        window.location.href = "login.html";
-        return;
-      }
+      if (!user) { window.location.href = "login.html"; return; }
       if (user.email !== ADMIN_EMAIL) {
-        window.location.href = "dashboard.html";
-        return;
+        document.getElementById("accessDenied").style.display = "flex"; return;
       }
-      document.getElementById("accessDenied").style.display = "none";
       document.getElementById("trackerContent").style.display = "block";
       await loadData();
       renderTable();
@@ -157,10 +146,7 @@
       if (snap.exists()) {
         trackerData = snap.data();
       } else {
-        students.forEach(s => {
-          trackerData[s] = {};
-          subjects.forEach(sub => trackerData[s][sub] = false);
-        });
+        students.forEach(s => { trackerData[s] = {}; subjects.forEach(sub => trackerData[s][sub] = false); });
         await setDoc(doc(db, "tracker", "submissions"), trackerData);
       }
     }
@@ -170,15 +156,10 @@
       tbody.innerHTML = "";
       students.forEach(student => {
         const row = document.createElement("tr");
-        let cells = `<td style="font-weight:600;color:var(--navy-2);">${student}</td>`;
+        let cells = `<td><strong style="font-size:0.875rem;">${student}</strong></td>`;
         subjects.forEach(sub => {
           const submitted = trackerData[student]?.[sub] || false;
-          cells += `<td>
-            <button class="toggle-btn ${submitted ? 'toggle-submitted' : 'toggle-not'}"
-              onclick="toggleStatus('${student}','${sub}')">
-              ${submitted ? '✅ Submitted' : '❌ Not Submitted'}
-            </button>
-          </td>`;
+          cells += `<td><button class="toggle-btn ${submitted ? 'toggle-yes' : 'toggle-no'}" onclick="toggleStatus('${student}','${sub}')">${submitted ? '✅ Submitted' : '❌ Not Submitted'}</button></td>`;
         });
         row.innerHTML = cells;
         tbody.appendChild(row);
@@ -196,13 +177,11 @@
     }
 
     window.logoutUser = function() {
-      ["cp_uid","cp_email","cp_role","cp_name"].forEach(k => {
-        localStorage.removeItem(k);
-        sessionStorage.removeItem(k);
-      });
+      ["cp_uid","cp_email","cp_role","cp_name"].forEach(k => { localStorage.removeItem(k); sessionStorage.removeItem(k); });
       signOut(auth).then(() => window.location.href = "login.html");
     }
   </script>
 
 </body>
 </html>
+ 

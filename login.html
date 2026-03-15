@@ -5,103 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login — ClassPortal</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    .role-selector {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 22px;
-    }
-    .role-btn {
-      padding: 14px 10px;
-      border-radius: 10px;
-      border: 2px solid var(--border);
-      background: white;
-      cursor: pointer;
-      text-align: center;
-      transition: var(--transition);
-      font-family: 'Inter', sans-serif;
-    }
-    .role-btn .rb-icon { font-size: 1.6rem; display: block; margin-bottom: 6px; }
-    .role-btn .rb-label { font-size: 0.85rem; font-weight: 600; color: var(--navy-2); display: block; }
-    .role-btn .rb-desc { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; display: block; }
-    .role-btn:hover { border-color: var(--blue); background: rgba(37,99,235,0.03); }
-    .role-btn.selected { border-color: var(--blue); background: rgba(37,99,235,0.05); }
-    .role-btn.selected-admin.selected { border-color: var(--gold); background: rgba(245,158,11,0.05); }
-
-    .password-wrap {
-      position: relative;
-    }
-    .password-wrap input {
-      padding-right: 46px;
-    }
-    .toggle-pw {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1.1rem;
-      color: var(--text-muted);
-      padding: 4px;
-      transition: var(--transition);
-      line-height: 1;
-    }
-    .toggle-pw:hover { color: var(--blue); }
-
-    .remember-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 14px 0 18px;
-    }
-    .remember-row input[type="checkbox"] {
-      width: 17px;
-      height: 17px;
-      accent-color: var(--blue);
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-    .remember-row label {
-      font-size: 0.875rem;
-      color: var(--text-muted);
-      cursor: pointer;
-      user-select: none;
-    }
-  </style>
 </head>
 <body>
 
-  <header>
-    <a href="index.html" class="header-brand">
-      <div class="logo-icon"><img src="https://i.postimg.cc/mg0ZNYHh/Whisk-ddc266604d642ee810d42746806c01f1dr-removebg-preview.png" alt="ClassPortal Logo" /></div>
-      <span style="display:none;">ClassPortal</span>
+  <header class="public-header">
+    <a href="index.html" class="brand">
+      <img src="https://i.postimg.cc/mg0ZNYHh/Whisk-ddc266604d642ee810d42746806c01f1dr-removebg-preview.png" alt="Logo" class="brand-logo" />
     </a>
-    <nav>
+    <nav class="public-nav">
       <a href="index.html">Home</a>
       <a href="login.html" class="active">Login</a>
-      <a href="signup.html" class="btn-nav">Sign Up</a>
+      <a href="signup.html" class="btn btn-primary btn-sm">Sign Up</a>
     </nav>
   </header>
 
-  <div class="auth-screen">
-    <div class="auth-box fade-up">
-      <div class="auth-icon-wrap">🔐</div>
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-icon">🔐</div>
       <h2>Welcome Back</h2>
       <p class="auth-sub">Select your role and login below</p>
 
-      <div class="role-selector">
-        <button class="role-btn selected-admin" id="btn-admin" onclick="selectRole('admin')">
-          <span class="rb-icon">🛡️</span>
-          <span class="rb-label">Admin</span>
-          <span class="rb-desc">Teacher / Manager</span>
+      <div class="role-grid">
+        <button class="role-card selected-admin" id="btn-admin" onclick="selectRole('admin')">
+          <span class="rc-icon">🛡️</span>
+          <span class="rc-label">Admin</span>
+          <span class="rc-desc">Teacher / Manager</span>
         </button>
-        <button class="role-btn" id="btn-student" onclick="selectRole('student')">
-          <span class="rb-icon">🎓</span>
-          <span class="rb-label">Student</span>
-          <span class="rb-desc">Class member</span>
+        <button class="role-card" id="btn-student" onclick="selectRole('student')">
+          <span class="rc-icon">🎓</span>
+          <span class="rc-label">Student</span>
+          <span class="rc-desc">Class member</span>
         </button>
       </div>
 
@@ -112,11 +45,9 @@
 
       <div class="form-group">
         <label>Password</label>
-        <div class="password-wrap">
+        <div class="pw-wrap">
           <input type="password" id="password" placeholder="Enter your password" />
-          <button class="toggle-pw" onclick="togglePassword()" id="toggleBtn" title="Show/Hide Password">
-            👁️
-          </button>
+          <button class="pw-toggle" onclick="togglePw()" id="pwBtn">👁️</button>
         </div>
       </div>
 
@@ -137,20 +68,9 @@
     </div>
   </div>
 
-  <footer>
-    <p>© 2025 <span>ClassPortal</span> — Assignment Submission System</p>
-  </footer>
-
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import {
-      getAuth,
-      signInWithEmailAndPassword,
-      setPersistence,
-      browserLocalPersistence,
-      browserSessionPersistence,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD2gg4JLsd-Q0vPRYuukZ3oujb6RiR53NE",
@@ -164,19 +84,14 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Auto login — if already logged in redirect
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        if (user.email === "admin@eportal.com") {
-          window.location.href = "admin.html";
-        } else {
-          window.location.href = "dashboard.html";
-        }
+        window.location.href = user.email === "admin@eportal.com" ? "admin.html" : "dashboard.html";
       }
     });
 
     let selectedRole = "admin";
-    let showingPassword = false;
+    let showPw = false;
 
     window.selectRole = function(role) {
       selectedRole = role;
@@ -191,13 +106,10 @@
       }
     }
 
-    window.togglePassword = function() {
-      const pwField = document.getElementById("password");
-      const btn = document.getElementById("toggleBtn");
-      showingPassword = !showingPassword;
-      pwField.type = showingPassword ? "text" : "password";
-      btn.textContent = showingPassword ? "🙈" : "👁️";
-      btn.title = showingPassword ? "Hide Password" : "Show Password";
+    window.togglePw = function() {
+      showPw = !showPw;
+      document.getElementById("password").type = showPw ? "text" : "password";
+      document.getElementById("pwBtn").textContent = showPw ? "🙈" : "👁️";
     }
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -217,35 +129,21 @@
       }
 
       try {
-        // Set persistence based on Remember Me
-        await setPersistence(auth,
-          rememberMe ? browserLocalPersistence : browserSessionPersistence
-        );
-
+        await setPersistence(auth, rememberMe ? browserLocalPersistence : browserSessionPersistence);
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-
-        // Store session info (no passwords stored)
         const storage = rememberMe ? localStorage : sessionStorage;
         storage.setItem("cp_uid", user.uid);
         storage.setItem("cp_email", user.email);
         storage.setItem("cp_role", user.email === "admin@eportal.com" ? "admin" : "student");
-
-        if (user.email === "admin@eportal.com") {
-          window.location.href = "admin.html";
-        } else {
-          window.location.href = "dashboard.html";
-        }
-
+        window.location.href = user.email === "admin@eportal.com" ? "admin.html" : "dashboard.html";
       } catch (error) {
         errorMsg.textContent = "❌ Invalid email or password. Please try again.";
         errorMsg.style.display = "block";
       }
     }
 
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") loginUser();
-    });
+    document.addEventListener("keydown", (e) => { if (e.key === "Enter") loginUser(); });
   </script>
 
 </body>

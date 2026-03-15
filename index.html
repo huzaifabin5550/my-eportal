@@ -8,26 +8,26 @@
 </head>
 <body>
 
-  <header>
-    <a href="index.html" class="header-brand">
-      <div class="logo-icon"><img src="https://i.postimg.cc/mg0ZNYHh/Whisk-ddc266604d642ee810d42746806c01f1dr-removebg-preview.png" alt="ClassPortal Logo" /></div>
-      <span style="display:none;">ClassPortal</span>
+  <header class="public-header">
+    <a href="index.html" class="brand">
+      <img src="https://i.postimg.cc/mg0ZNYHh/Whisk-ddc266604d642ee810d42746806c01f1dr-removebg-preview.png" alt="Logo" class="brand-logo" />
     </a>
-    <nav>
+    <nav class="public-nav">
       <a href="index.html" class="active">Home</a>
-      <div class="dropdown" id="loginDropdown">
-        <a href="#" class="dropdown-toggle" id="loginToggle"
-          onclick="toggleDropdown(event)">Log In ▾</a>
-        <div class="dropdown-menu" id="dropdownMenu">
+      <div class="nav-dropdown" id="loginDropdown">
+        <button class="nav-dropdown-toggle" onclick="toggleDropdown(event)">
+          Log In ▾
+        </button>
+        <div class="nav-dropdown-menu" id="dropdownMenu">
           <a href="login.html?role=admin">
-            <div class="dm-icon dm-admin">🛡️</div>
+            <div class="di di-admin">🛡️</div>
             <div>
               <strong>Login as Admin</strong>
               <small>Teacher / Manager</small>
             </div>
           </a>
           <a href="login.html?role=student">
-            <div class="dm-icon dm-student">🎓</div>
+            <div class="di di-student">🎓</div>
             <div>
               <strong>Login as Student</strong>
               <small>Class member</small>
@@ -35,46 +35,52 @@
           </a>
         </div>
       </div>
-      <a href="signup.html" class="btn-nav">Sign Up</a>
+      <a href="signup.html" class="btn btn-primary btn-sm">Sign Up</a>
     </nav>
   </header>
 
-  <div class="page-hero">
-    <div class="hero-badge">🎓 Academic Assignment Portal</div>
-    <h1 class="fade-up">Submit Assignments<br/><span>The Smart Way</span></h1>
-    <p class="fade-up-2">A secure platform for uploading, tracking, and managing class assignments — built for students and teachers.</p>
-    <div class="hero-btns fade-up-3">
-      <a href="signup.html" class="btn btn-primary">Get Started Free</a>
-      <a href="login.html" class="btn btn-secondary">Login to Portal</a>
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge fade-up">🎓 UK Level 3 Academic Portal</div>
+      <h1 class="fade-up-2">Submit Assignments<br/><span>The Smart Way</span></h1>
+      <p class="fade-up-3">A secure, modern platform for uploading, tracking, and managing class assignments — built for students and teachers.</p>
+      <div class="hero-btns fade-up-4">
+        <a href="signup.html" class="btn btn-primary btn-lg">Get Started Free</a>
+        <a href="login.html" class="btn btn-secondary btn-lg">Login to Portal</a>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <div class="feature-grid">
-    <a href="signup.html" class="feature-card fade-up">
-      <div class="fc-icon">📝</div>
-      <h3>Create Account</h3>
-      <p>Sign up with your student details and join the portal in seconds</p>
-    </a>
-    <a href="upload.html" class="feature-card fade-up-2">
-      <div class="fc-icon">📤</div>
-      <h3>Upload Assignment</h3>
-      <p>Submit PDF, DOCX, PPTX or ZIP files directly to your teacher</p>
-    </a>
-    <a href="status.html" class="feature-card fade-up-3">
-      <div class="fc-icon">📊</div>
-      <h3>Track Status</h3>
-      <p>See which assignments have been submitted and which are pending</p>
-    </a>
-    <a href="login.html" class="feature-card fade-up-4">
-      <div class="fc-icon">🔐</div>
-      <h3>Secure Login</h3>
-      <p>Your account and files are protected with Firebase Authentication</p>
-    </a>
-  </div>
+  <section class="features-section">
+    <div class="features-grid">
+      <a href="signup.html" class="feature-card fade-up">
+        <div class="fc-icon">📝</div>
+        <h3>Create Account</h3>
+        <p>Sign up with your student details and join the portal in seconds</p>
+      </a>
+      <a href="upload.html" class="feature-card fade-up-2">
+        <div class="fc-icon">📤</div>
+        <h3>Upload Assignment</h3>
+        <p>Submit PDF, DOCX, PPTX or ZIP files directly to your teacher</p>
+      </a>
+      <a href="status.html" class="feature-card fade-up-3">
+        <div class="fc-icon">📊</div>
+        <h3>Track Status</h3>
+        <p>See which assignments have been submitted and which are pending</p>
+      </a>
+      <a href="login.html" class="feature-card fade-up-4">
+        <div class="fc-icon">🔐</div>
+        <h3>Secure Login</h3>
+        <p>Your account and files are protected with Firebase Authentication</p>
+      </a>
+    </div>
+  </section>
 
-  <div style="max-width:1020px; margin: 0 auto 60px; padding: 0 32px;">
+  <section class="announcements-section">
     <div class="card">
-      <div class="card-title">📢 Announcements</div>
+      <div class="card-header">
+        <div class="card-title">📢 Announcements</div>
+      </div>
       <ul class="announce-list">
         <li>📌 All assignments must be submitted before the deadline</li>
         <li>📌 Accepted formats: PDF, DOCX, PPTX, ZIP (max 50MB)</li>
@@ -82,10 +88,10 @@
         <li>📌 Contact your teacher if you face any login issues</li>
       </ul>
     </div>
-  </div>
+  </section>
 
-  <footer>
-    <p>© 2025 <span>ClassPortal</span> — Assignment Submission System</p>
+  <footer class="site-footer">
+    <p>© 2025 <span>ClassPortal</span> — UK Level 3 Assignment Submission System</p>
   </footer>
 
   <script type="module">
@@ -104,25 +110,18 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Update nav if already logged in
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        const nav = document.querySelector("nav");
-        nav.innerHTML = user.email === "admin@eportal.com"
-          ? `
-            <a href="admin.html">Admin Panel</a>
-            <a href="assignments.html">Assignments</a>
-            <a href="tracker.html">Tracker</a>
-            <button class="nav-logout" onclick="window.location.href='admin.html'">
-              Go to Dashboard
-            </button>`
-          : `
-            <a href="dashboard.html">Dashboard</a>
-            <a href="upload.html">Upload</a>
-            <a href="status.html">My Status</a>
-            <button class="nav-logout" onclick="window.location.href='dashboard.html'">
-              Go to Dashboard
-            </button>`;
+        const nav = document.querySelector('.public-nav');
+        nav.innerHTML = user.email === "admin@eportal.com" ? `
+          <a href="admin.html">Admin Panel</a>
+          <a href="assignments.html">Assignments</a>
+          <a href="tracker.html">Tracker</a>
+          <a href="admin.html" class="btn btn-primary btn-sm">Dashboard →</a>` : `
+          <a href="dashboard.html">Dashboard</a>
+          <a href="upload.html">Upload</a>
+          <a href="status.html">My Status</a>
+          <a href="dashboard.html" class="btn btn-primary btn-sm">Dashboard →</a>`;
       }
     });
 
@@ -132,8 +131,8 @@
     }
 
     document.addEventListener("click", function(e) {
-      const dropdown = document.getElementById("loginDropdown");
-      if (dropdown && !dropdown.contains(e.target)) {
+      const dd = document.getElementById("loginDropdown");
+      if (dd && !dd.contains(e.target)) {
         document.getElementById("dropdownMenu").classList.remove("open");
       }
     });
@@ -141,4 +140,3 @@
 
 </body>
 </html>
- 

@@ -5,111 +5,130 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Upload Assignment — ClassPortal</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    .upload-card {
-      background: white;
-      border-radius: var(--radius);
-      padding: 32px;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
-    }
-  </style>
 </head>
 <body>
 
-  <header>
-    <a href="index.html" class="header-brand">
-       <div class="logo-icon"><img src="https://i.postimg.cc/mg0ZNYHh/Whisk-ddc266604d642ee810d42746806c01f1dr-removebg-preview.png" alt="ClassPortal Logo" /></div>
-     <span style="display:none;">ClassPortal</span>
-    </a>
-    <nav>
-      <a href="dashboard.html">Dashboard</a>
-      <a href="upload.html" class="active">Upload</a>
-      <a href="status.html">My Status</a>
-      <button class="nav-logout" onclick="logoutUser()">Logout</button>
-    </nav>
-  </header>
+  <div class="app-layout">
 
-  <div class="page-wrapper-sm">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <img src="https://i.postimg.cc/mg0ZNYHh/Whisk-ddc266604d642ee810d42746806c01f1dr-removebg-preview.png" alt="Logo" class="sidebar-logo" />
+      </div>
+      <div class="sidebar-user">
+        <div class="user-avatar" id="userAvatar">S</div>
+        <div class="user-info">
+          <strong id="sidebarName">Student</strong>
+          <small>Student Account</small>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Main Menu</div>
+        <a href="dashboard.html" class="nav-item">
+          <span class="nav-icon">🏠</span> Dashboard
+        </a>
+        <a href="upload.html" class="nav-item active">
+          <span class="nav-icon">📤</span> Upload Assignment
+        </a>
+        <a href="status.html" class="nav-item">
+          <span class="nav-icon">📊</span> My Status
+        </a>
+        <div class="nav-section-label">Account</div>
+        <a href="index.html" class="nav-item">
+          <span class="nav-icon">🏡</span> Home
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="sidebar-logout" onclick="logoutUser()">
+          <span class="nav-icon">🚪</span> Logout
+        </button>
+      </div>
+    </aside>
 
-    <div class="section-banner fade-up">
-      <div class="s-badge">📤 Assignment Upload</div>
-      <h2>Upload Your <span>Assignment</span></h2>
-      <p>Fill in all fields, attach your file, and click Upload.</p>
+    <div class="main-content">
+      <div class="top-bar">
+        <div class="top-bar-left">
+          <h1>Upload Assignment</h1>
+          <p>Submit your assignment files securely</p>
+        </div>
+        <div class="top-bar-right">
+          <span class="top-bar-name" id="topBarName">Student</span>
+          <div class="top-bar-avatar" id="topBarAvatar">S</div>
+        </div>
+      </div>
+
+      <div class="page-content">
+        <div class="section-banner fade-up">
+          <div class="s-badge">📤 Assignment Upload</div>
+          <h2>Upload Your <span>Assignment</span></h2>
+          <p>Fill in all fields, attach your file, and click Upload.</p>
+        </div>
+
+        <div class="card fade-up-2">
+          <div class="card-header">
+            <div class="card-title">📋 Assignment Upload Form</div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Student Full Name *</label>
+              <input type="text" id="studentName" placeholder="Auto-filled" disabled />
+            </div>
+            <div class="form-group">
+              <label>Student ID / Roll Number *</label>
+              <input type="text" id="rollNumber" placeholder="Auto-filled" disabled />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Email Address *</label>
+            <input type="email" id="email" placeholder="Auto-filled" disabled />
+          </div>
+
+          <div class="form-group">
+            <label>Course Name *</label>
+            <select id="courseName">
+              <option value="">-- Select course --</option>
+              <option value="gdpr">EU GDPR & Data Security</option>
+              <option value="future">Future Proofing your Business</option>
+              <option value="investigations">Investigations & Incident Response</option>
+              <option value="mobile">Mobile Device & Data Risks</option>
+              <option value="network">Network Architecture & Protocols</option>
+              <option value="threat">Threat & Risk: Expecting the Unexpected</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Assignment Title *</label>
+            <input type="text" id="assignmentTitle" placeholder="e.g. Assignment 1 — Data Protection Report" />
+          </div>
+
+          <div class="form-group">
+            <label>Upload File * (PDF, DOCX, PPTX, ZIP — max 50MB)</label>
+            <div class="file-drop-zone" onclick="document.getElementById('fileInput').click()">
+              <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.ppt,.pptx,.zip" onchange="handleFile()" />
+              <span class="fdz-icon">📁</span>
+              <p class="fdz-text"><strong>Click to browse</strong> or drag and drop your file here<br/>PDF, DOCX, PPTX, ZIP accepted — max 50MB</p>
+              <div class="file-name-display" id="fileName"></div>
+            </div>
+            <div class="progress-bar" id="progressBar">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Description / Notes (optional)</label>
+            <textarea id="notes" placeholder="Any notes or description for your teacher..."></textarea>
+          </div>
+
+          <button class="btn btn-primary btn-full" onclick="uploadAssignment()">
+            📤 Upload Assignment
+          </button>
+
+          <div id="uploadMsg" class="msg"></div>
+        </div>
+      </div>
     </div>
-
-    <div class="upload-card fade-up-2">
-      <div class="card-title" style="margin-bottom:22px;">📋 Assignment Upload Form</div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>Student Full Name *</label>
-          <input type="text" id="studentName" placeholder="Auto-filled" disabled />
-        </div>
-        <div class="form-group">
-          <label>Student ID / Roll Number *</label>
-          <input type="text" id="rollNumber" placeholder="Auto-filled" disabled />
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Email Address *</label>
-        <input type="email" id="email" placeholder="Auto-filled" disabled />
-      </div>
-
-      <div class="form-group">
-        <label>Course Name *</label>
-        <select id="courseName">
-          <option value="">-- Select course --</option>
-          <option value="gdpr">EU GDPR & Data Security</option>
-          <option value="future">Future Proofing your Business</option>
-          <option value="investigations">Investigations & Incident Response</option>
-          <option value="mobile">Mobile Device & Data Risks</option>
-          <option value="network">Network Architecture & Protocols</option>
-          <option value="threat">Threat & Risk: Expecting the Unexpected</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Assignment Title *</label>
-        <input type="text" id="assignmentTitle"
-          placeholder="e.g. Assignment 1 — Data Protection Report" />
-      </div>
-
-      <div class="form-group">
-        <label>Upload File * (PDF, DOCX, PPTX, ZIP — max 50MB)</label>
-        <div class="file-drop" onclick="document.getElementById('fileInput').click()">
-          <input type="file" id="fileInput"
-            accept=".pdf,.doc,.docx,.ppt,.pptx,.zip"
-            onchange="handleFile()" />
-          <div class="fd-icon">📁</div>
-          <p><strong>Click to browse</strong> or drag and drop</p>
-          <p>PDF, DOCX, PPTX, ZIP accepted — max 50MB</p>
-          <div class="file-name" id="fileName"></div>
-        </div>
-        <div class="progress-bar" id="progressBar">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Description / Notes (optional)</label>
-        <textarea id="notes"
-          placeholder="Any notes or description for your teacher..."></textarea>
-      </div>
-
-      <button class="btn btn-primary btn-full" onclick="uploadAssignment()">
-        📤 Upload Assignment
-      </button>
-
-      <div id="uploadMsg" class="msg"></div>
-    </div>
-
   </div>
-
-  <footer>
-    <p>© 2025 <span>ClassPortal</span> — Assignment Submission System</p>
-  </footer>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -129,23 +148,17 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
     const ADMIN_EMAIL = "admin@eportal.com";
-
-    let currentUser = null;
-    let userData = null;
-    let fileData = null;
-    let fileName = null;
-    let fileType = null;
+    let currentUser = null, userData = null, fileData = null, fileName = null, fileType = null;
 
     onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        window.location.href = "login.html";
-        return;
-      }
-      if (user.email === ADMIN_EMAIL) {
-        window.location.href = "admin.html";
-        return;
-      }
+      if (!user) { window.location.href = "login.html"; return; }
+      if (user.email === ADMIN_EMAIL) { window.location.href = "admin.html"; return; }
       currentUser = user;
+      const name = user.displayName || user.email.split("@")[0];
+      document.getElementById("sidebarName").textContent = name;
+      document.getElementById("topBarName").textContent = name;
+      document.getElementById("userAvatar").textContent = name.charAt(0).toUpperCase();
+      document.getElementById("topBarAvatar").textContent = name.charAt(0).toUpperCase();
       const userDoc = await getDoc(doc(db, "users", user.uid));
       if (userDoc.exists()) {
         userData = userDoc.data();
@@ -160,44 +173,27 @@
     window.handleFile = function() {
       const file = document.getElementById("fileInput").files[0];
       if (!file) return;
-
       const allowed = [".pdf",".doc",".docx",".ppt",".pptx",".zip"];
       const ext = "." + file.name.split(".").pop().toLowerCase();
       if (!allowed.includes(ext)) {
         document.getElementById("fileName").textContent = "❌ Invalid file type.";
         document.getElementById("fileName").style.color = "var(--error)";
-        fileData = null;
-        return;
+        fileData = null; return;
       }
-
       if (file.size > 50 * 1024 * 1024) {
         document.getElementById("fileName").textContent = "❌ File too large. Max 50MB.";
         document.getElementById("fileName").style.color = "var(--error)";
-        fileData = null;
-        return;
+        fileData = null; return;
       }
-
-      fileName = file.name;
-      fileType = file.type;
+      fileName = file.name; fileType = file.type;
       document.getElementById("fileName").textContent = "📎 " + file.name;
-      document.getElementById("fileName").style.color = "var(--blue)";
-
+      document.getElementById("fileName").style.color = "var(--primary)";
       const reader = new FileReader();
-      const progressBar = document.getElementById("progressBar");
-      const progressFill = document.getElementById("progressFill");
-      progressBar.style.display = "block";
-
-      reader.onprogress = (e) => {
-        if (e.lengthComputable) {
-          progressFill.style.width = (e.loaded / e.total * 100) + "%";
-        }
-      };
-
-      reader.onload = (e) => {
-        fileData = e.target.result;
-        progressFill.style.width = "100%";
-      };
-
+      const pb = document.getElementById("progressBar");
+      const pf = document.getElementById("progressFill");
+      pb.style.display = "block";
+      reader.onprogress = (e) => { if (e.lengthComputable) pf.style.width = (e.loaded / e.total * 100) + "%"; };
+      reader.onload = (e) => { fileData = e.target.result; pf.style.width = "100%"; };
       reader.readAsDataURL(file);
     }
 
@@ -206,43 +202,30 @@
       const title = document.getElementById("assignmentTitle").value.trim();
       const notes = document.getElementById("notes").value.trim();
       const uploadMsg = document.getElementById("uploadMsg");
-
       uploadMsg.style.display = "none";
-
       if (!course || !title) {
         uploadMsg.textContent = "❌ Please fill in all required fields.";
         uploadMsg.className = "msg msg-error";
-        uploadMsg.style.display = "block";
-        return;
+        uploadMsg.style.display = "block"; return;
       }
-
       if (!fileData) {
         uploadMsg.textContent = "❌ Please select a file to upload.";
         uploadMsg.className = "msg msg-error";
-        uploadMsg.style.display = "block";
-        return;
+        uploadMsg.style.display = "block"; return;
       }
-
       uploadMsg.textContent = "⏳ Uploading your assignment...";
       uploadMsg.className = "msg msg-info";
       uploadMsg.style.display = "block";
-
       try {
         await addDoc(collection(db, "assignments"), {
           userId: currentUser.uid,
           studentName: userData?.fullName || currentUser.displayName || "",
           rollNumber: userData?.rollNumber || "",
           email: currentUser.email,
-          course: course,
-          assignmentTitle: title,
-          notes: notes,
-          fileName: fileName,
-          fileType: fileType,
-          fileData: fileData,
+          course, assignmentTitle: title, notes,
+          fileName, fileType, fileData,
           uploadedAt: serverTimestamp()
         });
-
-        // Update tracker
         const trackerRef = doc(db, "tracker", "submissions");
         const trackerSnap = await getDoc(trackerRef);
         let trackerData = trackerSnap.exists() ? trackerSnap.data() : {};
@@ -250,10 +233,8 @@
         if (!trackerData[sName]) trackerData[sName] = {};
         trackerData[sName][course] = true;
         await setDoc(trackerRef, trackerData);
-
         uploadMsg.textContent = "✅ Assignment uploaded successfully! Redirecting...";
         uploadMsg.className = "msg msg-success";
-
         document.getElementById("courseName").value = "";
         document.getElementById("assignmentTitle").value = "";
         document.getElementById("notes").value = "";
@@ -261,9 +242,7 @@
         document.getElementById("progressBar").style.display = "none";
         document.getElementById("progressFill").style.width = "0%";
         fileData = null;
-
         setTimeout(() => window.location.href = "status.html", 2000);
-
       } catch (err) {
         uploadMsg.textContent = "❌ Upload failed. Please try again.";
         uploadMsg.className = "msg msg-error";
@@ -272,10 +251,7 @@
     }
 
     window.logoutUser = function() {
-      ["cp_uid","cp_email","cp_role","cp_name"].forEach(k => {
-        localStorage.removeItem(k);
-        sessionStorage.removeItem(k);
-      });
+      ["cp_uid","cp_email","cp_role","cp_name"].forEach(k => { localStorage.removeItem(k); sessionStorage.removeItem(k); });
       signOut(auth).then(() => window.location.href = "login.html");
     }
   </script>
