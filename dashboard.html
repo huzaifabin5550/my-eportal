@@ -14,10 +14,9 @@
       <span>Class<em>Portal</em></span>
     </a>
     <nav>
-      <a href="index.html">Home</a>
+      <a href="dashboard.html" class="active">Dashboard</a>
       <a href="upload.html">Upload</a>
       <a href="status.html">My Status</a>
-      <a href="dashboard.html" class="active">Dashboard</a>
       <button class="nav-logout" onclick="logoutUser()">Logout</button>
     </nav>
   </header>
@@ -47,7 +46,7 @@
           <small>Track submissions</small>
         </div>
       </a>
-      <a href="tracker.html" class="stat-card">
+      <a href="status.html" class="stat-card">
         <div class="stat-icon si-gold">📋</div>
         <div>
           <strong>All Subjects</strong>
@@ -102,6 +101,7 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const ADMIN_EMAIL = "admin@eportal.com";
 
     const courseNames = {
       gdpr: "EU GDPR & Data Security",
@@ -117,6 +117,10 @@
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         window.location.href = "login.html";
+        return;
+      }
+      if (user.email === ADMIN_EMAIL) {
+        window.location.href = "admin.html";
         return;
       }
       document.getElementById("studentName").textContent =
@@ -183,13 +187,11 @@
       link.click();
     }
 
-     window.logoutUser = function() {
-      localStorage.removeItem("cp_uid");
-      localStorage.removeItem("cp_email");
-      localStorage.removeItem("cp_role");
-      sessionStorage.removeItem("cp_uid");
-      sessionStorage.removeItem("cp_email");
-      sessionStorage.removeItem("cp_role");
+    window.logoutUser = function() {
+      ["cp_uid","cp_email","cp_role","cp_name"].forEach(k => {
+        localStorage.removeItem(k);
+        sessionStorage.removeItem(k);
+      });
       signOut(auth).then(() => window.location.href = "login.html");
     }
   </script>

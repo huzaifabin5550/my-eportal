@@ -1,4 +1,4 @@
- -<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -29,7 +29,6 @@
       <span>Class<em>Portal</em></span>
     </a>
     <nav>
-      <a href="index.html">Home</a>
       <a href="admin.html" class="active">Admin</a>
       <a href="tracker.html">Tracker</a>
       <a href="assignments.html">Assignments</a>
@@ -37,15 +36,13 @@
     </nav>
   </header>
 
-  <!-- Access Denied -->
   <div class="access-denied" id="accessDenied" style="display:none;">
     <div class="ad-icon">🚫</div>
     <h2>Access Denied</h2>
     <p>Only administrators can access this page.</p>
-    <a href="index.html" class="btn btn-primary">Go to Homepage</a>
+    <a href="login.html" class="btn btn-primary">Go to Login</a>
   </div>
 
-  <!-- Admin Content -->
   <div id="adminContent" style="display:none;">
     <div class="admin-wrap">
 
@@ -131,6 +128,7 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const ADMIN_EMAIL = "admin@eportal.com";
 
     const courseNames = {
       gdpr: "EU GDPR & Data Security",
@@ -144,12 +142,15 @@
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         window.location.href = "login.html";
-      } else if (user.email !== "admin@eportal.com") {
-        document.getElementById("accessDenied").style.display = "flex";
-      } else {
-        document.getElementById("adminContent").style.display = "block";
-        await loadRecent();
+        return;
       }
+      if (user.email !== ADMIN_EMAIL) {
+        window.location.href = "dashboard.html";
+        return;
+      }
+      document.getElementById("accessDenied").style.display = "none";
+      document.getElementById("adminContent").style.display = "block";
+      await loadRecent();
     });
 
     async function loadRecent() {
@@ -163,7 +164,6 @@
         const items = [];
         snapshot.forEach(d => items.push({ id: d.id, ...d.data() }));
 
-        // Get total count
         const allSnap = await getDocs(collection(db, "assignments"));
         document.getElementById("totalCount").textContent = allSnap.size;
 
@@ -196,12 +196,10 @@
     }
 
     window.logoutUser = function() {
-      localStorage.removeItem("cp_uid");
-      localStorage.removeItem("cp_email");
-      localStorage.removeItem("cp_role");
-      sessionStorage.removeItem("cp_uid");
-      sessionStorage.removeItem("cp_email");
-      sessionStorage.removeItem("cp_role");
+      ["cp_uid","cp_email","cp_role","cp_name"].forEach(k => {
+        localStorage.removeItem(k);
+        sessionStorage.removeItem(k);
+      });
       signOut(auth).then(() => window.location.href = "login.html");
     }
   </script>

@@ -23,7 +23,7 @@
       border-color: rgba(37,99,235,0.2);
       box-shadow: var(--shadow-sm);
     }
-    .subject-row .sub-info {
+    .sub-info {
       display: flex;
       align-items: center;
       gap: 12px;
@@ -52,7 +52,6 @@
       padding: 28px 32px;
       color: white;
       text-align: center;
-      display: none;
     }
     .confirm-banner .cb-icon { font-size: 3rem; margin-bottom: 12px; }
     .confirm-banner h3 {
@@ -72,25 +71,23 @@
       <span>Class<em>Portal</em></span>
     </a>
     <nav>
-      <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
       <a href="upload.html">Upload</a>
       <a href="status.html" class="active">My Status</a>
-      <a href="dashboard.html">Dashboard</a>
       <button class="nav-logout" onclick="logoutUser()">Logout</button>
     </nav>
   </header>
 
   <div class="page-wrapper-sm">
 
-    <!-- Confirmation banner (shown after upload redirect) -->
-    <div class="confirm-banner fade-up" id="confirmBanner">
+    <div class="confirm-banner fade-up" id="confirmBanner" style="display:none;">
       <div class="cb-icon">✅</div>
       <h3>Assignment Uploaded Successfully!</h3>
       <p>Your assignment has been submitted and recorded in the system.</p>
     </div>
 
     <div class="section-banner fade-up">
-      <div class="s-badge">📊 Submission Status</div>
+      <div class="s-badge">📊 My Status</div>
       <h2>My <span>Assignment Status</span></h2>
       <p>Check which assignments have been submitted for each course.</p>
     </div>
@@ -141,6 +138,7 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const ADMIN_EMAIL = "admin@eportal.com";
 
     const courses = [
       { key: "gdpr", label: "EU GDPR & Data Security", icon: "🔒" },
@@ -160,7 +158,14 @@
     }
 
     onAuthStateChanged(auth, async (user) => {
-      if (!user) { window.location.href = "login.html"; return; }
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+      if (user.email === ADMIN_EMAIL) {
+        window.location.href = "admin.html";
+        return;
+      }
 
       const userDoc = await getDoc(doc(db, "users", user.uid));
       const userData = userDoc.exists() ? userDoc.data() : {};
@@ -250,6 +255,10 @@
     }
 
     window.logoutUser = function() {
+      ["cp_uid","cp_email","cp_role","cp_name"].forEach(k => {
+        localStorage.removeItem(k);
+        sessionStorage.removeItem(k);
+      });
       signOut(auth).then(() => window.location.href = "login.html");
     }
   </script>

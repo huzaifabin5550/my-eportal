@@ -54,35 +54,31 @@
       <span>Class<em>Portal</em></span>
     </a>
     <nav>
-      <a href="index.html">Home</a>
       <a href="admin.html">Admin</a>
+      <a href="assignments.html">Assignments</a>
       <a href="tracker.html" class="active">Tracker</a>
       <button class="nav-logout" onclick="logoutUser()">Logout</button>
     </nav>
   </header>
 
-  <!-- Access Denied -->
   <div class="access-denied" id="accessDenied" style="display:none;">
     <div class="ad-icon">🚫</div>
     <h2>Access Denied</h2>
     <p>Only administrators can access this page.</p>
-    <a href="index.html" class="btn btn-primary">Go to Homepage</a>
+    <a href="login.html" class="btn btn-primary">Go to Login</a>
   </div>
 
-  <!-- Tracker Content -->
   <div id="trackerContent" style="display:none;">
     <div class="tracker-wrap">
 
       <div class="section-banner fade-up">
         <div class="s-badge">📋 Admin Only</div>
         <h2>Assignment <span>Submission Tracker</span></h2>
-        <p>Click any button to toggle submitted / not submitted status. Changes save instantly.</p>
+        <p>Click any button to toggle submitted / not submitted. Changes save instantly.</p>
       </div>
 
       <div class="table-card fade-up-2">
-        <div class="card-title" style="margin-bottom:20px;">
-          👥 Class Overview
-        </div>
+        <div class="card-title" style="margin-bottom:20px;">👥 Class Overview</div>
         <table>
           <thead>
             <tr>
@@ -130,6 +126,7 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const ADMIN_EMAIL = "admin@eportal.com";
 
     const students = [
       "Alishba","Irfan","Maaz Hussain","Talha","Abrar",
@@ -143,13 +140,16 @@
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         window.location.href = "login.html";
-      } else if (user.email !== "admin@eportal.com") {
-        document.getElementById("accessDenied").style.display = "flex";
-      } else {
-        document.getElementById("trackerContent").style.display = "block";
-        await loadData();
-        renderTable();
+        return;
       }
+      if (user.email !== ADMIN_EMAIL) {
+        window.location.href = "dashboard.html";
+        return;
+      }
+      document.getElementById("accessDenied").style.display = "none";
+      document.getElementById("trackerContent").style.display = "block";
+      await loadData();
+      renderTable();
     });
 
     async function loadData() {
@@ -196,6 +196,10 @@
     }
 
     window.logoutUser = function() {
+      ["cp_uid","cp_email","cp_role","cp_name"].forEach(k => {
+        localStorage.removeItem(k);
+        sessionStorage.removeItem(k);
+      });
       signOut(auth).then(() => window.location.href = "login.html");
     }
   </script>

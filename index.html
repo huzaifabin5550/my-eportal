@@ -15,10 +15,9 @@
     </a>
     <nav>
       <a href="index.html" class="active">Home</a>
-      <a href="upload.html">Upload</a>
-      <a href="status.html">My Status</a>
       <div class="dropdown" id="loginDropdown">
-        <a href="#" class="dropdown-toggle" id="loginToggle" onclick="toggleDropdown(event)">Log In ▾</a>
+        <a href="#" class="dropdown-toggle" id="loginToggle"
+          onclick="toggleDropdown(event)">Log In ▾</a>
         <div class="dropdown-menu" id="dropdownMenu">
           <a href="login.html?role=admin">
             <div class="dm-icon dm-admin">🛡️</div>
@@ -89,13 +88,52 @@
     <p>© 2025 <span>ClassPortal</span> — Assignment Submission System</p>
   </footer>
 
-  <script>
-    function toggleDropdown(e) {
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD2gg4JLsd-Q0vPRYuukZ3oujb6RiR53NE",
+      authDomain: "my-e-portal.firebaseapp.com",
+      projectId: "my-e-portal",
+      storageBucket: "my-e-portal.firebasestorage.app",
+      messagingSenderId: "628881859766",
+      appId: "1:628881859766:web:e45df5cb372d58960c7217"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Update nav if already logged in
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const nav = document.querySelector("nav");
+        nav.innerHTML = user.email === "admin@eportal.com"
+          ? `
+            <a href="admin.html">Admin Panel</a>
+            <a href="assignments.html">Assignments</a>
+            <a href="tracker.html">Tracker</a>
+            <button class="nav-logout" onclick="window.location.href='admin.html'">
+              Go to Dashboard
+            </button>`
+          : `
+            <a href="dashboard.html">Dashboard</a>
+            <a href="upload.html">Upload</a>
+            <a href="status.html">My Status</a>
+            <button class="nav-logout" onclick="window.location.href='dashboard.html'">
+              Go to Dashboard
+            </button>`;
+      }
+    });
+
+    window.toggleDropdown = function(e) {
       e.preventDefault();
       document.getElementById("dropdownMenu").classList.toggle("open");
     }
+
     document.addEventListener("click", function(e) {
-      if (!document.getElementById("loginDropdown").contains(e.target)) {
+      const dropdown = document.getElementById("loginDropdown");
+      if (dropdown && !dropdown.contains(e.target)) {
         document.getElementById("dropdownMenu").classList.remove("open");
       }
     });
@@ -103,3 +141,4 @@
 
 </body>
 </html>
+ 

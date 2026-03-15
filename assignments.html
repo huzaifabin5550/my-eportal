@@ -24,22 +24,20 @@
       <span>Class<em>Portal</em></span>
     </a>
     <nav>
-      <a href="index.html">Home</a>
       <a href="admin.html">Admin</a>
       <a href="assignments.html" class="active">Assignments</a>
+      <a href="tracker.html">Tracker</a>
       <button class="nav-logout" onclick="logoutUser()">Logout</button>
     </nav>
   </header>
 
-  <!-- Access Denied -->
   <div class="access-denied" id="accessDenied" style="display:none;">
     <div class="ad-icon">🚫</div>
     <h2>Access Denied</h2>
     <p>Only administrators can access this page.</p>
-    <a href="index.html" class="btn btn-primary">Go to Homepage</a>
+    <a href="login.html" class="btn btn-primary">Go to Login</a>
   </div>
 
-  <!-- Admin Content -->
   <div id="adminContent" style="display:none;">
     <div class="assign-wrap">
 
@@ -128,6 +126,7 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const ADMIN_EMAIL = "admin@eportal.com";
 
     const courseNames = {
       gdpr: "EU GDPR & Data Security",
@@ -143,12 +142,15 @@
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         window.location.href = "login.html";
-      } else if (user.email !== "admin@eportal.com") {
-        document.getElementById("accessDenied").style.display = "flex";
-      } else {
-        document.getElementById("adminContent").style.display = "block";
-        await loadAssignments();
+        return;
       }
+      if (user.email !== ADMIN_EMAIL) {
+        window.location.href = "dashboard.html";
+        return;
+      }
+      document.getElementById("accessDenied").style.display = "none";
+      document.getElementById("adminContent").style.display = "block";
+      await loadAssignments();
     });
 
     async function loadAssignments() {
@@ -204,7 +206,6 @@
       const name = document.getElementById("searchName").value.toLowerCase();
       const roll = document.getElementById("searchRoll").value.toLowerCase();
       const course = document.getElementById("searchCourse").value;
-
       const filtered = allAssignments.filter(a =>
         (!name || (a.studentName || "").toLowerCase().includes(name)) &&
         (!roll || (a.rollNumber || "").toLowerCase().includes(roll)) &&
@@ -243,6 +244,10 @@
     }
 
     window.logoutUser = function() {
+      ["cp_uid","cp_email","cp_role","cp_name"].forEach(k => {
+        localStorage.removeItem(k);
+        sessionStorage.removeItem(k);
+      });
       signOut(auth).then(() => window.location.href = "login.html");
     }
   </script>

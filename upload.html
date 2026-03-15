@@ -23,9 +23,9 @@
       <span>Class<em>Portal</em></span>
     </a>
     <nav>
-      <a href="index.html">Home</a>
-      <a href="upload.html" class="active">Upload</a>
       <a href="dashboard.html">Dashboard</a>
+      <a href="upload.html" class="active">Upload</a>
+      <a href="status.html">My Status</a>
       <button class="nav-logout" onclick="logoutUser()">Logout</button>
     </nav>
   </header>
@@ -128,6 +128,7 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const ADMIN_EMAIL = "admin@eportal.com";
 
     let currentUser = null;
     let userData = null;
@@ -136,10 +137,15 @@
     let fileType = null;
 
     onAuthStateChanged(auth, async (user) => {
-      if (!user) { window.location.href = "login.html"; return; }
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+      if (user.email === ADMIN_EMAIL) {
+        window.location.href = "admin.html";
+        return;
+      }
       currentUser = user;
-
-      // Load user profile from Firestore
       const userDoc = await getDoc(doc(db, "users", user.uid));
       if (userDoc.exists()) {
         userData = userDoc.data();
@@ -155,7 +161,7 @@
       const file = document.getElementById("fileInput").files[0];
       if (!file) return;
 
-      const allowed = [".pdf", ".doc", ".docx", ".ppt", ".pptx", ".zip"];
+      const allowed = [".pdf",".doc",".docx",".ppt",".pptx",".zip"];
       const ext = "." + file.name.split(".").pop().toLowerCase();
       if (!allowed.includes(ext)) {
         document.getElementById("fileName").textContent = "❌ Invalid file type.";
@@ -248,7 +254,6 @@
         uploadMsg.textContent = "✅ Assignment uploaded successfully! Redirecting...";
         uploadMsg.className = "msg msg-success";
 
-        // Reset form
         document.getElementById("courseName").value = "";
         document.getElementById("assignmentTitle").value = "";
         document.getElementById("notes").value = "";
@@ -267,6 +272,10 @@
     }
 
     window.logoutUser = function() {
+      ["cp_uid","cp_email","cp_role","cp_name"].forEach(k => {
+        localStorage.removeItem(k);
+        sessionStorage.removeItem(k);
+      });
       signOut(auth).then(() => window.location.href = "login.html");
     }
   </script>
